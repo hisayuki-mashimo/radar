@@ -1,0 +1,24 @@
+環境構築履歴
+( https://qiita.com/SatouRyou/items/6169800993587f4e6018 )
+( https://qiita.com/Quramy/items/a5d8967cdbd1b8575130 )
+( http://js.studio-kingdom.com/typescript/handbook/module_resolution )
+mkdir radar
+cd radar/
+yarn init
+yarn add typescript
+yarn add react
+yarn add react-dom
+yarn add redux react-redux
+yarn add webpack --dev
+yarn add webpack-dev-server --dev
+yarn add babel-loader babel-core --dev
+yarn add babel-preset-react --dev
+yarn add babel-preset-es2015 --dev
+yarn add babel-preset-stage-0
+yarn add lint
+yarn add --dev extract-text-webpack-plugin node-sass style-loader css-loader sass-loader
+yarn add typed-css-modules typed-css-modules-loader
+vi webpack.config.js
+
+yarn run build --mode=development
+yarn webpack-dev-server --mode=development
