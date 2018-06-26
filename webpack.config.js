@@ -64,6 +64,9 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new ExtractTextPlugin("styles.css"),
+  ],
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
     modules: [

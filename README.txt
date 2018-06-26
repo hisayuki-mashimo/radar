@@ -2,6 +2,7 @@
 ( https://qiita.com/SatouRyou/items/6169800993587f4e6018 )
 ( https://qiita.com/Quramy/items/a5d8967cdbd1b8575130 )
 ( http://js.studio-kingdom.com/typescript/handbook/module_resolution )
+( http://koukitips.net/post1967/ )
 mkdir radar
 cd radar/
 yarn init
@@ -16,7 +17,7 @@ yarn add babel-preset-react --dev
 yarn add babel-preset-es2015 --dev
 yarn add babel-preset-stage-0
 yarn add lint
-yarn add --dev extract-text-webpack-plugin node-sass style-loader css-loader sass-loader
+yarn add extract-text-webpack-plugin@next node-sass style-loader css-loader sass-loader
 yarn add typed-css-modules typed-css-modules-loader
 vi webpack.config.js
 
