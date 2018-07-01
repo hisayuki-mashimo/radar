@@ -35,7 +35,7 @@ module.exports = {
                 modules: true,
                 importLoaders: 1,
                 camelCase: true,
-                localIdentName: "test_[hash:base64:8]",
+                localIdentName: "[local]_[hash:base64:8]",
                 minimize: false,
                 sourceMap: true,
               },
@@ -51,12 +51,17 @@ module.exports = {
                 ],
               },
             },
+            */
             {
               loader: "sass-loader",
               options: {
                 includePaths: ["assets/stylesheets"],
                 camelCase: true,
               },
+            },
+            /*
+            {
+              loader: "style-loader",
             },
             */
           ],

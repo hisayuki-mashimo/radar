@@ -4,7 +4,7 @@ import PolyhedronBasisTheta from "models/PolyhedronBasisTheta";
 import PolyhedronRadarBasisTheta from "models/PolyhedronRadarBasisTheta";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import * as styles from "./styles.css";
+import * as styles from "./styles.scss";
 
 class RadarViewer extends React.Component {
   componentDidMount() {
@@ -270,9 +270,7 @@ class RadarViewer extends React.Component {
     const radar_box = ReactDOM.findDOMNode(this.refs.radar);
     const gauze_node = ReactDOM.findDOMNode(this.refs.gauze);
 
-    console.log('---', gauze_node, '===');
     gauze_node.onmousedown = function (event) {
-      console.log(11111);
       move_switch = true;
       latest_move_X = event.clientX;
       latest_move_Y = event.clientY;
@@ -308,10 +306,8 @@ class RadarViewer extends React.Component {
   }
 
   render() {
-    return <div ref="radar">
-      <div ref="gauze" className={styles.gauze}/* style="width: 351px; height: 351px; position: absolute; top: 0px; left: 0px; cursor: default; background-color: rgba(0, 0, 0, 0);"*/>
-      </div>
-      <script type="text/javascript"></script>
+    return <div ref="radar" className={styles.radar}>
+      <div ref="gauze" className={styles.gauze} />
     </div>;
   }
 }

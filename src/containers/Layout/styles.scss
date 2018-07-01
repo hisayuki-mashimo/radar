@@ -4,57 +4,56 @@
     font-size: 12px;
 }
 
-table#contents_frame {
+.contents_frame {
     margin-top: 5px;
     margin-left: 5px;
     border: none;
     border-collapse: collapse;
 }
 
-td#title_frame,
-td#radar_frame,
-td#form_frame {
+.title_frame,
+.radar_frame,
+.form_frame {
     width: 351px;
 }
 
-td#info_frame {
+.info_frame {
     vertical-align: top;
 }
 
-td.row_spacer {
+.row_spacer {
     height: 10px;
 }
 
-td.col_spacer {
+.col_spacer {
     width: 10px;
 }
 
-div#title {
+.title {
     padding: 5px 0px;
     text-align: center;
     background-color: #000000;
     color: #aaccff;
 }
 
-div#radar {
+.radar_frame {
     position: relative;
     height: 351px;
-    #background-color: #99aabb;
     background-color: #000000;
 }
 
-div#form {
+.form {
     padding: 5px;
     background-color: #000000;
     color: #aaccff;
 }
 
-div#info {
+.info {
     padding: 2px;
     border: solid 1px #ccaaaa;
     background-color: #fffcfe;
 }
 
-span#name {
+.name {
     color: #ff4444;
 }
