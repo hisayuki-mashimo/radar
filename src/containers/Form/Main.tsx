@@ -2,20 +2,22 @@ import React from "react";
 import * as ReactDOM from "react-dom";
 
 class Form extends React.Component {
-  onChange() {
+  onlSelectChange() {
     ReactDOM.findDOMNode(this.refs.form).submit();
+  }
+
+  onSubmit() {
+
   }
 
   render() {
     return <div id="form">
       <form ref="form" action="" method="get">
-        {/*
-        姓:<input type="text" name="sei" size="10" value="" />
-        名:<input type="text" name="mei" size="10" value="" />
-        */}
-        <input type="submit" value="診断" />
+        姓:<input type="text" name="sei" ref="sei" size="10" />
+        名:<input type="text" name="mei" ref="mei" size="10" />
+        <input type="button" onClick={this.onSubmit} value="診断" />
         <select ref="parameter_type"
-          onChange={this.onChange}
+          onChange={this.onSelectChange}
           defaultValue="20"
         >
           <option value="4">基本</option>
