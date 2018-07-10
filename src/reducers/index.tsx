@@ -11,11 +11,16 @@ export interface UserAction {
   user: User;
 }
 
+/*
 export interface IState {
-  user?: User;
+  user: User | null;
 }
 
 export const RState = Record<IState>({
+  user: null,
+});
+*/
+export const RState = Record({
   user: null,
 });
 
