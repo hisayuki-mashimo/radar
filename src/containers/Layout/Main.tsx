@@ -12,25 +12,17 @@ class Layout extends React.Component {
             <td className={styles.titleFrame}>
               <div className={styles.title}></div>
             </td>
-            <td className={styles.colSpacer}></td>
-            <td className={styles.adviceTitleFrame}>
-              <div className={styles.adviceTitle}></div>
-            </td>
           </tr>
           <tr>
-            <td colSpan="3" className={styles.rowSpacer}></td>
+            <td className={styles.rowSpacer}></td>
           </tr>
           <tr>
             <td className={styles.radarFrame}>
               <RadarViewer />
             </td>
-            <td className={styles.colSpacer}></td>
-            <td rowSpan="3" className={styles.adviceFrame}>
-              <div className={styles.advice}></div>
-            </td>
           </tr>
           <tr>
-            <td colSpan="2" className={styles.rowSpacer}></td>
+            <td className={styles.rowSpacer}></td>
           </tr>
           <tr>
             <td className={styles.formFrame}>
@@ -39,7 +31,7 @@ class Layout extends React.Component {
             <td className={styles.colSpacer}></td>
           </tr>
           <tr>
-            <td colSpan="3" className={styles.rowSpacer}></td>
+            <td className={styles.rowSpacer}></td>
           </tr>
           <tr>
             <td className={styles.infoFrame}>
@@ -49,7 +41,6 @@ class Layout extends React.Component {
                 信用しないでください。
               </div>
             </td>
-            <td colSpan="2" className={styles.colSpacer}></td>
           </tr>
         </tbody>
       </table>

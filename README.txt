@@ -29,6 +29,7 @@ yarn add lint
 yarn add extract-text-webpack-plugin@next node-sass style-loader css-loader sass-loader
 yarn add typed-css-modules typed-css-modules-loader
 yarn add postcss-loader
+yarn add immutable
 vi webpack.config.js
 
 yarn run build --mode=development
