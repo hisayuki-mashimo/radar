@@ -4,10 +4,20 @@ import PolyhedronBasisTheta from "models/PolyhedronBasisTheta";
 import PolyhedronRadarBasisTheta from "models/PolyhedronRadarBasisTheta";
 import React from "react";
 import * as ReactDOM from "react-dom";
+import { connect } from "react-redux";
 import * as styles from "./styles.scss";
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
 
 class RadarViewer extends React.Component {
   componentDidMount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
     var object_code = 'OctahedronTheta';
     var parameter_count = 6;
     var params = {
@@ -33,8 +43,8 @@ class RadarViewer extends React.Component {
     var progress_count = 100;
     var advice = new Array();
 
-    var sei = 'A';
-    var mei = 'B';
+    var sei = nextProps.user.sei;
+    var mei = nextProps.user.mei;
 
     for (var i = 0; i < parameter_count; i++) {
       parameters.push(0);
@@ -312,4 +322,7 @@ class RadarViewer extends React.Component {
   }
 }
 
-export default RadarViewer;
+export default connect(
+  mapStateToProps,
+  null,
+)(RadarViewer);

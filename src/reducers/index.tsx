@@ -33,7 +33,7 @@ const reducer: Reducer<State> = (
 ) => {
   switch (action.type) {
     case "SET_USER":
-      return (state: State, action: UserAction): State => (state.set("user", action.user))(state, action);
+      return state.set("user", action.user);
 
     default:
       return state;

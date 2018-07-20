@@ -1,9 +1,10 @@
 環境構築履歴
 ( https://qiita.com/luckypool/items/f1e756e9d3e9786ad9ea )
-(  https://qiita.com/SatouRyou/items/6169800993587f4e6018 )
+( https://qiita.com/SatouRyou/items/6169800993587f4e6018 )
 ( https://qiita.com/Quramy/items/a5d8967cdbd1b8575130 )
 ( http://js.studio-kingdom.com/typescript/handbook/module_resolution )
 ( http://koukitips.net/post1967/ )
+( https://qiita.com/pullphone/items/d28baeb296666a4847b8 )
 git clone https://github.com/riywo/anyenv ~/.anyenv
 vi ~/.zshrc
 +if [ -d $HOME/.anyenv ] ; then
