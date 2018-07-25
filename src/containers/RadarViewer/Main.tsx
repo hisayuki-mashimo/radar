@@ -14,52 +14,73 @@ const mapStateToProps = (state) => {
 };
 
 class RadarViewer extends React.Component {
-  componentDidMount() {
-  }
+  constructor(props) {
+    super(props);
 
-  componentWillReceiveProps(nextProps) {
-    var object_code = 'OctahedronTheta';
-    var parameter_count = 6;
-    var params = {
-      alpha: 100,
-      size: 350,
-      parameter_texts: ['行動力', '適応力', '独創性', '情熱性', '自然愛', 'オーラ'],
-      basis_fill_style: 'rgba(255, 255, 255, 0.0)',
-      basis_stroke_style: 'rgba( 96, 184, 240, 0.5)',
-      shaft_fill_style: 'rgba(255, 255, 255, 0.0)',
-      shaft_stroke_style: 'rgba( 96, 184, 240, 0.5)',
-      meter_fill_style: 'rgba(  0,  64, 160, 0.06)',
-      meter_stroke_style: 'rgba(  0, 132, 255, 0.2)',
-      param_fill_style: 'rgba(112, 240, 192, 0.5)',
-      param_stroke_style: 'rgba(112, 240, 192, 0.8)',
-      text_fill_style: 'rgba(240,   0,  64, 0.3)',
-      text_stroke_style: 'rgba(255, 255, 255, 0.8)'
-    };
+    const operater = new PolyhedronBasisTheta();
+    const radarOperater = new PolyhedronRadarBasisTheta(operater);
 
-    var frame_node = ReactDOM.findDOMNode(this.refs.radar);
+    const parameters = [];
+    const parametersProgress = [];
+    const parameterCount = 6;
 
-    var parameters = [];
-    var paramsters_progress = [];
-    var progress_count = 100;
-    var advice = new Array();
-
-    var sei = nextProps.user.sei;
-    var mei = nextProps.user.mei;
-
-    for (var i = 0; i < parameter_count; i++) {
+    for (let i = 0; i < parameterCount; i++) {
       parameters.push(0);
-      paramsters_progress.push(0);
+      parametersProgress.push(0);
     }
 
-    var OperaterTheta = new PolyhedronBasisTheta();
-    var OperaterRadarTheta = new PolyhedronRadarBasisTheta(OperaterTheta);
-    var RadarObjectTheta = OperaterRadarTheta.summons(object_code, frame_node, params);
+    this.state = {
+      radarOperater: radarOperater,
+      objectCode: 'OctahedronTheta',
+      parameters: parameters,
+      parametersProgress: parametersProgress,
+      parameterCount: parameterCount,
+      params: {
+        alpha: 100,
+        size: 350,
+        parameter_texts: ['行動力', '適応力', '独創性', '情熱性', '自然愛', 'オーラ'],
+        basis_fill_style: 'rgba(255, 255, 255, 0.0)',
+        basis_stroke_style: 'rgba( 96, 184, 240, 0.5)',
+        shaft_fill_style: 'rgba(255, 255, 255, 0.0)',
+        shaft_stroke_style: 'rgba( 96, 184, 240, 0.5)',
+        meter_fill_style: 'rgba(  0,  64, 160, 0.06)',
+        meter_stroke_style: 'rgba(  0, 132, 255, 0.2)',
+        param_fill_style: 'rgba(112, 240, 192, 0.5)',
+        param_stroke_style: 'rgba(112, 240, 192, 0.8)',
+        text_fill_style: 'rgba(240,   0,  64, 0.3)',
+        text_stroke_style: 'rgba(255, 255, 255, 0.8)'
+      },
+      progressCount: 100,
+    };
+  }
 
+  componentDidMount() {
+    var frame_node = ReactDOM.findDOMNode(this.refs.radar);
+
+    const radarObject = this.state.radarOperater.summons(this.state.objectCode, frame_node, this.state.params);
+
+    //this.setState({ radarObject: radarObject });
+
+    console.log("--------", this.state.radarObject);
+    this.makeRadar(radarObject, "", "");
+  }
+
+  /*
+  componentWillReceiveProps(nextProps) {
+    const sei = nextProps.user.sei;
+    const mei = nextProps.user.mei;
+
+    this.makeRadar(sei, mei);
+  }
+  */
+
+  makeRadar(radarObject, sei, mei) {
     if (sei || mei) {
-      var string_md5 = CybozuLabs.MD5.calc(sei + '+=+' + mei);
-      var strings = string_md5.split('');
+      const parameters = this.state.parameters.slice();
+      const md5String = CybozuLabs.MD5.calc(sei + '+=+' + mei);
+      const strings = md5String.split('');
 
-      for (var i = 0; i < parameter_count; i++) {
+      for (var i = 0; i < this.state.parameterCount; i++) {
         var integer = 1;
 
         for (var j = 0; j < 2; j++) {
@@ -109,16 +130,21 @@ class RadarViewer extends React.Component {
         parameters[i] = integer;
       }
 
-      progress_count = 0;
+      this.setState({ parameters: parameters });
+      this.setState({ progress_count: 0 });
     }
 
+    //console.log("==========", this.state.radarObject);
+    var frame_node = ReactDOM.findDOMNode(this.refs.radar);
     var rect = frame_node.getBoundingClientRect();
 
     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
-    var radar_center_X = (rect.left + scrollLeft) + RadarObjectTheta.object_basis._center;
-    var radar_center_Y = (rect.top + scrollTop) + RadarObjectTheta.object_basis._center;
+    //var radar_center_X = (rect.left + scrollLeft) + this.state.radarObject.object_basis._center;
+    //var radar_center_Y = (rect.top + scrollTop) + this.state.radarObject.object_basis._center;
+    var radar_center_X = (rect.left + scrollLeft) + radarObject.object_basis._center;
+    var radar_center_Y = (rect.top + scrollTop) + radarObject.object_basis._center;
 
     var move_type = "vector";
 
@@ -164,16 +190,23 @@ class RadarViewer extends React.Component {
     };
 
     var execute = function () {
-      if (progress_count < 100) {
-        for (var i = 0; i < parameter_count; i++) {
-          if (paramsters_progress[i] >= parameters[i]) {
-            paramsters_progress[i] = parameters[i];
+      let progressCount = this.state.progressCount;
+
+      if (progressCount < 100) {
+        let parametersProgress = this.state.parametersProgress.slice();
+
+        for (let i = 0; i < this.state.parameterCount; i++) {
+          if (parametersProgress[i] >= this.state.parameters[i]) {
+            parametersProgress[i] = this.state.parameters[i];
+
             continue;
           }
-          paramsters_progress[i] += 2;
+
+          parametersProgress[i] += 2;
         }
 
-        progress_count++;
+        this.setState({ parametersProgress: parametersProgress + 1 });
+        this.setState({ progressCount: progressCount + 1 });
       }
 
       if (move_switch === true) {
@@ -247,9 +280,9 @@ class RadarViewer extends React.Component {
         vector_theta = vector_theta_base + move_rotate_theta;
       }
 
-      RadarObjectTheta.configureParam(paramsters_progress);
-      RadarObjectTheta.setDirection(rotate_theta, vector_theta, length_theta);
-      RadarObjectTheta.output();
+      this.state.radarObject.configureParam(this.state.parametersProgress);
+      this.state.radarObject.setDirection(rotate_theta, vector_theta, length_theta);
+      this.state.radarObject.output();
     };
 
     execute();
@@ -291,7 +324,7 @@ class RadarViewer extends React.Component {
       var relative_diff_Y = latest_base_Y - radar_center_Y;
       var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
 
-      if (relative_diff_radius <= RadarObjectTheta.max_radius) {
+      if (relative_diff_radius <= this.state.radarObject.max_radius) {
         move_type = 'vector';
       } else {
         move_type = 'rotate';
