@@ -31,6 +31,7 @@ class RadarViewer extends React.Component {
 
     this.state = {
       radarOperater: radarOperater,
+      radarObject: null,
       objectCode: 'OctahedronTheta',
       parameters: parameters,
       parametersProgress: parametersProgress,
@@ -48,31 +49,49 @@ class RadarViewer extends React.Component {
         param_fill_style: 'rgba(112, 240, 192, 0.5)',
         param_stroke_style: 'rgba(112, 240, 192, 0.8)',
         text_fill_style: 'rgba(240,   0,  64, 0.3)',
-        text_stroke_style: 'rgba(255, 255, 255, 0.8)'
+        text_stroke_style: 'rgba(255, 255, 255, 0.8)',
       },
+      move_type: "vector",
+      move_switch: false,
+      latest_base_X: 0,
+      latest_base_Y: 0,
+      latest_move_X: 0,
+      latest_move_Y: 0,
+      move_rotate_theta: (0) / 180 * Math.PI,
+      move_vector_theta: (30) / 180 * Math.PI,
+      move_length_theta: (0) / 180 * Math.PI,
+      diff_vector_theta: (0.05) / 180 * Math.PI,
+      diff_rotate_theta: (0) / 180 * Math.PI,
+      diff_length_theta: (1.5) / 180 * Math.PI,
+      rotate_theta_base: (15) / 180 * Math.PI,
+      vector_theta_base: (0) / 180 * Math.PI,
+      length_theta_base: (0) / 180 * Math.PI,
+      rotate_theta: 0,
+      vector_theta: 0,
+      length_theta: 0,
+      theta_R: Math.PI / 2,
       progressCount: 100,
+      animation: null,
+      animation_switch: true,
     };
   }
 
   componentDidMount() {
-    var frame_node = ReactDOM.findDOMNode(this.refs.radar);
-
+    const frame_node = ReactDOM.findDOMNode(this.refs.radar);
     const radarObject = this.state.radarOperater.summons(this.state.objectCode, frame_node, this.state.params);
 
-    //this.setState({ radarObject: radarObject });
+    this.setState({ radarObject: radarObject });
 
-    console.log("--------", this.state.radarObject);
     this.makeRadar(radarObject, "", "");
   }
 
-  /*
   componentWillReceiveProps(nextProps) {
     const sei = nextProps.user.sei;
     const mei = nextProps.user.mei;
 
-    this.makeRadar(sei, mei);
+    this.initParameterProgress();
+    this.makeRadar(this.state.radarObject, sei, mei);
   }
-  */
 
   makeRadar(radarObject, sei, mei) {
     if (sei || mei) {
@@ -134,218 +153,195 @@ class RadarViewer extends React.Component {
       this.setState({ progress_count: 0 });
     }
 
-    //console.log("==========", this.state.radarObject);
     var frame_node = ReactDOM.findDOMNode(this.refs.radar);
     var rect = frame_node.getBoundingClientRect();
 
     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
-    //var radar_center_X = (rect.left + scrollLeft) + this.state.radarObject.object_basis._center;
-    //var radar_center_Y = (rect.top + scrollTop) + this.state.radarObject.object_basis._center;
     var radar_center_X = (rect.left + scrollLeft) + radarObject.object_basis._center;
     var radar_center_Y = (rect.top + scrollTop) + radarObject.object_basis._center;
 
-    var move_type = "vector";
+    this.execute(radarObject);
 
-    var move_switch = false;
-    var latest_base_X = 0;
-    var latest_base_Y = 0;
-    var latest_move_X = 0;
-    var latest_move_Y = 0;
-    var move_rotate_theta = (0) / 180 * Math.PI;
-    var move_vector_theta = (30) / 180 * Math.PI;
-    var move_length_theta = (0) / 180 * Math.PI;
-    var diff_vector_theta = (0.05) / 180 * Math.PI;
-    var diff_rotate_theta = (0) / 180 * Math.PI;
-    var diff_length_theta = (1.5) / 180 * Math.PI;
-    var rotate_theta_base = (15) / 180 * Math.PI;
-    var vector_theta_base = (0) / 180 * Math.PI;
-    var length_theta_base = (0) / 180 * Math.PI;
-    var rotate_theta = 0;
-    var vector_theta = 0;
-    var length_theta = 0;
-    var theta_R = Math.PI / 2;
-
-    var parseLength = function (len) {
-      return Math.round(len * 100) / 100;
-    };
-
-    var parseTheta = function (theta, to_360) {
-      var theta_quarity = (theta >= 0) ? 1 : -1;
-      var theta_quantity = Math.abs(theta) % (Math.PI * 2);
-
-      if (theta_quantity > Math.PI) {
-        theta_quarity = theta_quarity * -1;
-        theta_quantity = (Math.PI * 2) - theta_quantity;
-      }
-
-      theta = theta_quarity * theta_quantity;
-
-      if (to_360 !== true) {
-        theta = Math.round(theta / Math.PI * 1800) / 10;
-      }
-
-      return theta;
-    };
-
-    var execute = function () {
-      let progressCount = this.state.progressCount;
-
-      if (progressCount < 100) {
-        let parametersProgress = this.state.parametersProgress.slice();
-
-        for (let i = 0; i < this.state.parameterCount; i++) {
-          if (parametersProgress[i] >= this.state.parameters[i]) {
-            parametersProgress[i] = this.state.parameters[i];
-
-            continue;
-          }
-
-          parametersProgress[i] += 2;
-        }
-
-        this.setState({ parametersProgress: parametersProgress + 1 });
-        this.setState({ progressCount: progressCount + 1 });
-      }
-
-      if (move_switch === true) {
-        rotate_theta_base = rotate_theta;
-        vector_theta_base = vector_theta;
-        length_theta_base = length_theta;
-
-        if (move_type === 'vector') {
-          var diff_X = latest_move_X - latest_base_X;
-          var diff_Y = latest_move_Y - latest_base_Y;
-
-          var direction_X = (diff_X > 0) ? -1 : 1;
-          var direction_Y = (diff_Y > 0) ? 1 : -1;
-          var abs_X = Math.abs(diff_X);
-          var abs_Y = Math.abs(diff_Y);
-
-          if (abs_X > 30) abs_X = 30;
-          if (abs_Y > 30) abs_Y = 30;
-          var theta_diff_X = (abs_X / 200) * direction_X;
-          var theta_diff_Y = (abs_Y / 200) * direction_Y;
-
-          move_rotate_theta = 0;
-          move_vector_theta = GeometryCalculator.getThetaByLengthes('Y', theta_diff_X, theta_diff_Y) * -1 + Math.PI;
-          move_length_theta = 0;
-          diff_length_theta = GeometryCalculator.getLengthByPytha(null, theta_diff_X, theta_diff_Y);
-          diff_rotate_theta = 0;
-        } else {
-          var LD0X = latest_base_X - radar_center_X;
-          var LD0Y = latest_base_Y - radar_center_Y;
-          var LD1X = latest_move_X - radar_center_X;
-          var LD1Y = latest_move_Y - radar_center_Y;
-
-          var TD0 = GeometryCalculator.getThetaByLengthes('Y', LD0X, LD0Y);
-          var TD1 = GeometryCalculator.getThetaByLengthes('Y', LD1X, LD1Y);
-          var TD2 = TD1 - TD0;
-
-          var direction_T = (TD2 > 0) ? 1 : -1;
-          var abs_T = Math.abs(TD2);
-          if (abs_T > 0.2) abs_T = 0.2;
-          var theta_diff = abs_T * direction_T;
-
-          move_rotate_theta = 0;
-          move_length_theta = 0;
-          diff_length_theta = 0;
-          diff_rotate_theta = theta_diff;
-        }
-
-        latest_base_X = latest_move_X;
-        latest_base_Y = latest_move_Y;
-      }
-
-      if (diff_length_theta > 0) {
-        move_length_theta += diff_length_theta;
-
-        var thetas = GeometryCalculator.getThetasByRelative(
-          rotate_theta_base,
-          vector_theta_base,
-          length_theta_base,
-          move_rotate_theta,
-          move_vector_theta,
-          move_length_theta
-        );
-        rotate_theta = thetas.rotate_theta;
-        vector_theta = thetas.vector_theta;
-        length_theta = thetas.length_theta;
-      }
-      else if (diff_rotate_theta != 0) {
-        move_rotate_theta += diff_rotate_theta;
-
-        rotate_theta = rotate_theta_base + move_rotate_theta;
-        vector_theta = vector_theta_base + move_rotate_theta;
-      }
-
-      this.state.radarObject.configureParam(this.state.parametersProgress);
-      this.state.radarObject.setDirection(rotate_theta, vector_theta, length_theta);
-      this.state.radarObject.output();
-    };
-
-    execute();
-
-    var animation = null;
-    var animation_switch = true;
+    const ref = this;
 
     document.onkeydown = function (event) {
       if (event.keyCode == 13) {
-        if (animation_switch === false) {
-          animation_switch = true;
-          animation = setInterval(function () {
-            execute();
-          }, 50);
+        if (ref.state.animation) {
+          clearInterval(ref.state.animation);
+        }
+
+        if (ref.state.animation_switch === false) {
+          ref.setState({ animation_switch: true });
+          ref.setState({
+            animation: setInterval(function () {
+              ref.execute(radarObject);
+            }, 50)
+          });
         } else {
-          animation_switch = false;
-          clearInterval(animation);
+          ref.setState({ animation_switch: false });
         }
       }
     };
 
-    if (animation_switch === true) {
-      animation = setInterval(function () {
-        execute();
-      }, 50);
+    if (ref.state.animation_switch === true) {
+      if (ref.state.animation) {
+        clearInterval(ref.state.animation);
+      }
+
+      ref.setState({
+        animation: setInterval(function () {
+          ref.execute(radarObject);
+        }, 50)
+      });
     }
 
     const radar_box = ReactDOM.findDOMNode(this.refs.radar);
     const gauze_node = ReactDOM.findDOMNode(this.refs.gauze);
 
     gauze_node.onmousedown = function (event) {
-      move_switch = true;
-      latest_move_X = event.clientX;
-      latest_move_Y = event.clientY;
-      latest_base_X = event.clientX;
-      latest_base_Y = event.clientY;
+      ref.setState({ move_switch: true });
+      ref.setState({ latest_move_X: event.clientX });
+      ref.setState({ latest_move_Y: event.clientY });
+      ref.setState({ latest_base_X: event.clientX });
+      ref.setState({ latest_base_Y: event.clientY });
 
-      var relative_diff_X = latest_base_X - radar_center_X;
-      var relative_diff_Y = latest_base_Y - radar_center_Y;
+      var relative_diff_X = ref.state.latest_base_X - ref.state.radar_center_X;
+      var relative_diff_Y = ref.state.latest_base_Y - ref.state.radar_center_Y;
       var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
 
-      if (relative_diff_radius <= this.state.radarObject.max_radius) {
-        move_type = 'vector';
+      if (relative_diff_radius <= ref.state.radarObject.max_radius) {
+        ref.setState({ move_type: 'vector' });
       } else {
-        move_type = 'rotate';
+        ref.setState({ move_type: 'rotate' });
       }
     };
 
     document.onmousemove = function (event) {
-      if (move_switch === true) {
-        latest_move_X = event.clientX;
-        latest_move_Y = event.clientY;
+      if (ref.state.move_switch === true) {
+        ref.setState({ latest_move_X: event.clientX });
+        ref.setState({ latest_move_Y: event.clientY });
       }
     };
 
     document.onmouseup = function (event) {
-      if (move_switch === true) {
-        move_switch = false;
-
-        latest_move_X = event.clientX;
-        latest_move_Y = event.clientY;
+      if (ref.state.move_switch === true) {
+        ref.setState({ move_switch: false });
+        ref.setState({ latest_move_X: event.clientX });
+        ref.setState({ latest_move_Y: event.clientY });
       }
     };
+  }
+
+  initParameterProgress() {
+    const parametersProgress = [];
+
+    for (let i = 0; i < this.state.parameterCount; i++) {
+      parametersProgress.push(0);
+    }
+
+    console.log(1111);
+    this.setState({ parametersProgress: parametersProgress });
+    console.log(3222);
+    this.setState({ progressCount: 0 });
+    console.log(2222);
+  }
+
+  execute(radarObject) {
+    let progressCount = this.state.progressCount;
+
+    if (progressCount < 100) {
+      let parametersProgress = this.state.parametersProgress.slice();
+
+      for (let i = 0; i < this.state.parameterCount; i++) {
+        if (parametersProgress[i] >= this.state.parameters[i]) {
+          parametersProgress[i] = this.state.parameters[i];
+
+          continue;
+        }
+
+        parametersProgress[i] += 2;
+      }
+
+      this.setState({ parametersProgress: parametersProgress });
+      this.setState({ progressCount: progressCount + 1 });
+      console.log(parametersProgress);
+    }
+
+    if (this.state.move_switch === true) {
+      this.setState({ rotate_theta_base: this.state.rotate_theta });
+      this.setState({ vector_theta_base: this.state.vector_theta });
+      this.setState({ length_theta_base: this.state.length_theta });
+
+      if (this.state.move_type === 'vector') {
+        var diff_X = this.state.latest_move_X - this.state.latest_base_X;
+        var diff_Y = this.state.latest_move_Y - this.state.latest_base_Y;
+
+        var direction_X = (diff_X > 0) ? -1 : 1;
+        var direction_Y = (diff_Y > 0) ? 1 : -1;
+        var abs_X = Math.abs(diff_X);
+        var abs_Y = Math.abs(diff_Y);
+
+        if (abs_X > 30) abs_X = 30;
+        if (abs_Y > 30) abs_Y = 30;
+        var theta_diff_X = (abs_X / 200) * direction_X;
+        var theta_diff_Y = (abs_Y / 200) * direction_Y;
+
+        this.setState({ move_rotate_theta: 0 });
+        this.setState({ move_vector_theta: GeometryCalculator.getThetaByLengthes('Y', theta_diff_X, theta_diff_Y) * -1 + Math.PI });
+        this.setState({ move_length_theta: 0 });
+        this.setState({ diff_length_theta: GeometryCalculator.getLengthByPytha(null, theta_diff_X, theta_diff_Y) });
+        this.setState({ diff_rotate_theta: 0 });
+      } else {
+        var LD0X = this.state.latest_base_X - this.state.radar_center_X;
+        var LD0Y = this.state.latest_base_Y - this.state.radar_center_Y;
+        var LD1X = this.state.latest_move_X - this.state.radar_center_X;
+        var LD1Y = this.state.latest_move_Y - this.state.radar_center_Y;
+
+        var TD0 = GeometryCalculator.getThetaByLengthes('Y', LD0X, LD0Y);
+        var TD1 = GeometryCalculator.getThetaByLengthes('Y', LD1X, LD1Y);
+        var TD2 = TD1 - TD0;
+
+        var direction_T = (TD2 > 0) ? 1 : -1;
+        var abs_T = Math.abs(TD2);
+        if (abs_T > 0.2) abs_T = 0.2;
+        var theta_diff = abs_T * direction_T;
+
+        this.setState({ move_rotate_theta: 0 });
+        this.setState({ move_length_theta: 0 });
+        this.setState({ diff_length_theta: 0 });
+        this.setState({ diff_rotate_theta: theta_diff });
+      }
+
+      this.setState({ latest_base_X: this.state.latest_move_X });
+      this.setState({ latest_base_Y: this.state.latest_move_Y });
+    }
+
+    if (this.state.diff_length_theta > 0) {
+      this.setState({ move_length_theta: this.state.move_length_theta + this.state.diff_length_theta });
+
+      var thetas = GeometryCalculator.getThetasByRelative(
+        this.state.rotate_theta_base,
+        this.state.vector_theta_base,
+        this.state.length_theta_base,
+        this.state.move_rotate_theta,
+        this.state.move_vector_theta,
+        this.state.move_length_theta,
+      );
+      this.setState({ rotate_theta: thetas.rotate_theta });
+      this.setState({ vector_theta: thetas.vector_theta });
+      this.setState({ length_theta: thetas.length_theta });
+    }
+    else if (this.state.diff_rotate_theta != 0) {
+      this.setState({ move_rotate_theta: this.state.move_rotate_theta + this.state.diff_rotate_theta });
+      this.setState({ rotate_theta: this.state.rotate_theta_base + this.state.move_rotate_theta });
+      this.setState({ vector_theta: this.state.vector_theta_base + this.state.move_rotate_theta });
+    }
+
+    radarObject.configureParam(this.state.parametersProgress);
+    radarObject.setDirection(this.state.rotate_theta, this.state.vector_theta, this.state.length_theta);
+    radarObject.output();
   }
 
   render() {
