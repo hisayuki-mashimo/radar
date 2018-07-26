@@ -82,18 +82,13 @@ class RadarViewer extends React.Component {
 
     this.setState({ radarObject: radarObject });
 
-    this.makeRadar(radarObject, "", "");
+    this.makeRadar(radarObject);
   }
 
   componentWillReceiveProps(nextProps) {
     const sei = nextProps.user.sei;
     const mei = nextProps.user.mei;
 
-    this.initParameterProgress();
-    this.makeRadar(this.state.radarObject, sei, mei);
-  }
-
-  makeRadar(radarObject, sei, mei) {
     if (sei || mei) {
       const parameters = this.state.parameters.slice();
       const md5String = CybozuLabs.MD5.calc(sei + '+=+' + mei);
@@ -153,6 +148,10 @@ class RadarViewer extends React.Component {
       this.setState({ progress_count: 0 });
     }
 
+    this.initParameterProgress();
+  }
+
+  makeRadar(radarObject) {
     var frame_node = ReactDOM.findDOMNode(this.refs.radar);
     var rect = frame_node.getBoundingClientRect();
 
@@ -241,11 +240,8 @@ class RadarViewer extends React.Component {
       parametersProgress.push(0);
     }
 
-    console.log(1111);
     this.setState({ parametersProgress: parametersProgress });
-    console.log(3222);
     this.setState({ progressCount: 0 });
-    console.log(2222);
   }
 
   execute(radarObject) {
@@ -266,7 +262,6 @@ class RadarViewer extends React.Component {
 
       this.setState({ parametersProgress: parametersProgress });
       this.setState({ progressCount: progressCount + 1 });
-      console.log(parametersProgress);
     }
 
     if (this.state.move_switch === true) {
