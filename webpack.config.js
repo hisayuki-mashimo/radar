@@ -79,5 +79,9 @@ module.exports = {
       path.resolve(__dirname, "./src/"),
       path.resolve(__dirname, "./node_modules/"),
     ],
+  },
+  devServer: {
+    host: '0.0.0.0',
+    port: 9090,
   }
 };
