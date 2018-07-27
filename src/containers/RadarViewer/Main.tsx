@@ -36,6 +36,8 @@ class RadarViewer extends React.Component {
       parameters: parameters,
       parametersProgress: parametersProgress,
       parameterCount: parameterCount,
+      radar_center_X: 0,
+      radar_center_Y: 0,
       params: {
         alpha: 100,
         size: 350,
@@ -78,8 +80,14 @@ class RadarViewer extends React.Component {
 
   componentDidMount() {
     const frame_node = ReactDOM.findDOMNode(this.refs.radar);
+    const rect = frame_node.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
     const radarObject = this.state.radarOperater.summons(this.state.objectCode, frame_node, this.state.params);
 
+    this.setState({ radar_center_X: (rect.left + scrollLeft) + radarObject.object_basis._center });
+    this.setState({ radar_center_Y: (rect.top + scrollTop) + radarObject.object_basis._center });
     this.setState({ radarObject: radarObject });
 
     this.makeRadar(radarObject);
@@ -152,15 +160,6 @@ class RadarViewer extends React.Component {
   }
 
   makeRadar(radarObject) {
-    var frame_node = ReactDOM.findDOMNode(this.refs.radar);
-    var rect = frame_node.getBoundingClientRect();
-
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-    var radar_center_X = (rect.left + scrollLeft) + radarObject.object_basis._center;
-    var radar_center_Y = (rect.top + scrollTop) + radarObject.object_basis._center;
-
     this.execute(radarObject);
 
     const ref = this;
@@ -211,9 +210,9 @@ class RadarViewer extends React.Component {
       var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
 
       if (relative_diff_radius <= ref.state.radarObject.max_radius) {
-        ref.setState({ move_type: 'vector' });
+        ref.setState({ move_type: "vector" });
       } else {
-        ref.setState({ move_type: 'rotate' });
+        ref.setState({ move_type: "rotate" });
       }
     };
 
@@ -269,7 +268,7 @@ class RadarViewer extends React.Component {
       this.setState({ vector_theta_base: this.state.vector_theta });
       this.setState({ length_theta_base: this.state.length_theta });
 
-      if (this.state.move_type === 'vector') {
+      if (this.state.move_type === "vector") {
         var diff_X = this.state.latest_move_X - this.state.latest_base_X;
         var diff_Y = this.state.latest_move_Y - this.state.latest_base_Y;
 
