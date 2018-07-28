@@ -1,3 +1,4 @@
+import Gauze from "containers/Gauze/Main";
 import CybozuLabs from "models/CybozuLabs";
 import GeometryCalculator from "models/GeometryCalculator";
 import PolyhedronBasisTheta from "models/PolyhedronBasisTheta";
@@ -196,25 +197,6 @@ class RadarViewer extends React.Component {
     }
 
     const radar_box = ReactDOM.findDOMNode(this.refs.radar);
-    const gauze_node = ReactDOM.findDOMNode(this.refs.gauze);
-
-    gauze_node.onmousedown = function (event) {
-      ref.setState({ move_switch: true });
-      ref.setState({ latest_move_X: event.clientX });
-      ref.setState({ latest_move_Y: event.clientY });
-      ref.setState({ latest_base_X: event.clientX });
-      ref.setState({ latest_base_Y: event.clientY });
-
-      var relative_diff_X = ref.state.latest_base_X - ref.state.radar_center_X;
-      var relative_diff_Y = ref.state.latest_base_Y - ref.state.radar_center_Y;
-      var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
-
-      if (relative_diff_radius <= ref.state.radarObject.max_radius) {
-        ref.setState({ move_type: "vector" });
-      } else {
-        ref.setState({ move_type: "rotate" });
-      }
-    };
 
     document.onmousemove = function (event) {
       if (ref.state.move_switch === true) {
@@ -338,9 +320,29 @@ class RadarViewer extends React.Component {
     radarObject.output();
   }
 
+  changeAngle = (x, y) => {
+    this.setState({ move_switch: true });
+    this.setState({ latest_move_X: x });
+    this.setState({ latest_move_Y: y });
+    this.setState({ latest_base_X: x });
+    this.setState({ latest_base_Y: y });
+
+    var relative_diff_X = this.state.latest_base_X - this.state.radar_center_X;
+    var relative_diff_Y = this.state.latest_base_Y - this.state.radar_center_Y;
+    var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
+
+    if (relative_diff_radius <= this.state.radarObject.max_radius) {
+      this.setState({ move_type: "vector" });
+    } else {
+      this.setState({ move_type: "rotate" });
+    }
+  };
+
   render() {
     return <div ref="radar" className={styles.radar}>
-      <div ref="gauze" className={styles.gauze} />
+      <Gauze
+        onMouseDown={this.changeAngle}
+      />
     </div>;
   }
 }

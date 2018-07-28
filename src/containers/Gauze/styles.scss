@@ -1,8 +1,10 @@
-.radar {
+.gauze {
   width: 351px;
   height: 351px;
   position: absolute;
   top: 0px;
   left: 0px;
-  z-index: 0;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 1;
 }
