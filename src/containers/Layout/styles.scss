@@ -1,14 +1,5 @@
-* {
-    margin: 0px;
-    padding: 0px;
-    font-size: 12px;
-}
-
 .contents_frame {
-    margin-top: 5px;
-    margin-left: 5px;
-    border: none;
-    border-collapse: collapse;
+    padding: 10px;
 }
 
 .title_frame,
@@ -17,43 +8,19 @@
     width: 351px;
 }
 
-.info_frame {
-    vertical-align: top;
-}
-
-.row_spacer {
-    height: 10px;
-}
-
-.col_spacer {
-    width: 10px;
-}
-
-.title {
-    padding: 5px 0px;
-    text-align: center;
-    background-color: #000000;
-    color: #aaccff;
+.title_frame {
+    margin-bottom: 10px;
 }
 
 .radar_frame {
+    margin-bottom: 10px;
     position: relative;
     height: 351px;
     background-color: #000000;
 }
 
-.form {
+.form_frame {
     padding: 5px;
     background-color: #000000;
     color: #aaccff;
-}
-
-.info {
-    padding: 2px;
-    border: solid 1px #ccaaaa;
-    background-color: #fffcfe;
-}
-
-.name {
-    color: #ff4444;
 }
