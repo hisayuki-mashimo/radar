@@ -225,8 +225,6 @@ class RadarViewer extends React.Component {
     }
 
     if (state.diff_length_theta > 0) {
-      this.setState({ move_length_theta: state.move_length_theta + state.diff_length_theta });
-
       var thetas = GeometryCalculator.getThetasByRelative(
         state.rotate_theta_base,
         state.vector_theta_base,
@@ -235,7 +233,9 @@ class RadarViewer extends React.Component {
         state.move_vector_theta,
         state.move_length_theta,
       );
+
       this.setState({
+        move_length_theta: state.move_length_theta + state.diff_length_theta,
         rotate_theta: thetas.rotate_theta,
         vector_theta: thetas.vector_theta,
         length_theta: thetas.length_theta,
