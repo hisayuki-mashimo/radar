@@ -49,15 +49,15 @@ export default class PolyhedronRadarBasisTheta {
      * 実体化
      *
      * @param   string          embody_key
-     * @param   HTMLDivElement  frame_node
+     * @param   HTMLDivElement  canvas_context
      * @param   object  params
      */
-    summons(embody_key, frame_node, params?: {}): Object | void {
+    summons(embody_key, canvas_context, params?: {}): Object | void {
         try {
             // 実体化
             var embody = {
                 "basis": this,
-                "object_basis": this.operator_basis.summons(embody_key, frame_node, params)
+                "object_basis": this.operator_basis.summons(embody_key, canvas_context, params)
             };
 
             // プロパティ定義
@@ -192,7 +192,6 @@ export default class PolyhedronRadarBasisTheta {
      */
     configureParam(embody, parameters): void {
         if (parameters.length !== embody.parameter_relations.length) {
-            console.log(embody.object_basis);
             throw 'Invalid parameter length(request: ' + parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
         }
 

@@ -1,8 +1,12 @@
-.radar {
+.radar_frame {
   width: 351px;
   height: 351px;
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 0;
+}
+
+.radar {
+  position: absolute;
 }

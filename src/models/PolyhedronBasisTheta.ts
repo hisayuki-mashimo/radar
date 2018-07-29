@@ -16,8 +16,6 @@ export default class PolyhedronBasisTheta {
         basis: null,
 
         // HTMLデータ
-        frame_node: null,
-        canvas_node: null,
         canvas_context: null,
 
         // 外部設定値
@@ -57,10 +55,10 @@ export default class PolyhedronBasisTheta {
      * 実体化
      *
      * @param   string  embody_key
-     * @param   string  frame_node
+     * @param   string  canvas_context
      * @param   object  params
      */
-    summons(embody_key, frame_node, params?: {}): Object | void {
+    summons(embody_key, canvas_context, params?: {}): Object | void {
         try {
             // 実体化
             const Embody = polygons[embody_key];
@@ -88,16 +86,7 @@ export default class PolyhedronBasisTheta {
             embody.moment_poses = {};
 
             // HTMLデータの初期化
-            if (frame_node === undefined) {
-                throw 'Undefined param(frame).';
-            }
-            embody.frame_node = frame_node;
-            embody.canvas_node = document.createElement('canvas');
-            embody.canvas_context = embody.canvas_node.getContext('2d');
-            embody.canvas_node.setAttribute('width', (embody._center * 2) + 'px');
-            embody.canvas_node.setAttribute('height', (embody._center * 2) + 'px');
-            embody.canvas_node.style.position = 'absolute';
-            embody.frame_node.appendChild(embody.canvas_node);
+            embody.canvas_context = canvas_context;
 
             // 共通メソッド定義
             var ref = this;

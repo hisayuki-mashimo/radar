@@ -71,11 +71,17 @@ class RadarViewer extends React.Component {
 
   makeRadar(props) {
     const parameterValue = this.getParameterTypeValue(props.parameterType);
-    const frame_node = ReactDOM.findDOMNode(this.refs.radar);
+    const frame_node = ReactDOM.findDOMNode(this.refs.radar_frame);
     const rect = frame_node.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, frame_node, { ...this.state.params, ...parameterValue.params });
+
+    const canvas_node = ReactDOM.findDOMNode(this.refs.radar);
+    const canvas_context = canvas_node.getContext('2d');
+    canvas_node.setAttribute('width', '351px');
+    canvas_node.setAttribute('height', '351px');
+
+    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, canvas_context, { ...this.state.params, ...parameterValue.params });
     const parameterProgress = this.initParameterProgress(props);
 
     const state = { 
@@ -324,7 +330,14 @@ class RadarViewer extends React.Component {
   }
 
   render() {
-    return <div ref="radar" className={styles.radar}>
+    return <div
+      ref="radar_frame"
+      className={styles.radarFrame}
+    >
+      <canvas
+        ref="radar"
+        className={styles.radar}
+      />
       <Gauze
         onMouseDown={this.changeAngle}
       />
