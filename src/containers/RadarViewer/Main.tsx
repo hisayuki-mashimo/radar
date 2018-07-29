@@ -130,31 +130,9 @@ class RadarViewer extends React.Component {
         }, 50)
       });
     }
-
-    const radar_box = ReactDOM.findDOMNode(this.refs.radar);
-
-    document.onmousemove = function (event) {
-      if (ref.state.move_switch === true) {
-        ref.setState({
-          latest_move_X: event.clientX,
-          latest_move_Y: event.clientY,
-        });
-      }
-    };
-
-    document.onmouseup = function (event) {
-      if (ref.state.move_switch === true) {
-        ref.setState({
-          move_switch: false,
-          latest_move_X: event.clientX,
-          latest_move_Y: event.clientY,
-        });
-      }
-    };
   }
 
   initParameterProgress = (props) => {
-    console.log("initParameterProgress");
     const state = {
       parametersProgress: [],
       progressCount: 0
@@ -250,20 +228,24 @@ class RadarViewer extends React.Component {
       this.setState({ move_length_theta: state.move_length_theta + state.diff_length_theta });
 
       var thetas = GeometryCalculator.getThetasByRelative(
-        this.state.rotate_theta_base,
-        this.state.vector_theta_base,
-        this.state.length_theta_base,
-        this.state.move_rotate_theta,
-        this.state.move_vector_theta,
-        this.state.move_length_theta,
+        state.rotate_theta_base,
+        state.vector_theta_base,
+        state.length_theta_base,
+        state.move_rotate_theta,
+        state.move_vector_theta,
+        state.move_length_theta,
       );
-      this.setState({ rotate_theta: thetas.rotate_theta });
-      this.setState({ vector_theta: thetas.vector_theta });
-      this.setState({ length_theta: thetas.length_theta });
+      this.setState({
+        rotate_theta: thetas.rotate_theta,
+        vector_theta: thetas.vector_theta,
+        length_theta: thetas.length_theta,
+      });
     } else if (state.diff_rotate_theta != 0) {
-      this.setState({ move_rotate_theta: state.move_rotate_theta + state.diff_rotate_theta });
-      this.setState({ rotate_theta: state.rotate_theta_base + state.move_rotate_theta });
-      this.setState({ vector_theta: state.vector_theta_base + state.move_rotate_theta });
+      this.setState({
+        move_rotate_theta: state.move_rotate_theta + state.diff_rotate_theta,
+        rotate_theta: state.rotate_theta_base + state.move_rotate_theta,
+        vector_theta: state.vector_theta_base + state.move_rotate_theta,
+      });
     }
 
     radarObject.configureParam(state.parametersProgress);
@@ -271,7 +253,7 @@ class RadarViewer extends React.Component {
     radarObject.output();
   }
 
-  changeAngle = (x, y) => {
+  resetAxis = (x, y) => {
     this.setState({ move_switch: true });
     this.setState({ latest_move_X: x });
     this.setState({ latest_move_Y: y });
@@ -286,6 +268,25 @@ class RadarViewer extends React.Component {
       this.setState({ move_type: "vector" });
     } else {
       this.setState({ move_type: "rotate" });
+    }
+  };
+
+  changeAxis = (x, y) => {
+    if (this.state.move_switch === true) {
+      this.setState({
+        latest_move_X: x,
+        latest_move_Y: y,
+      });
+    }
+  };
+
+  setAxis = (x, y) => {
+    if (this.state.move_switch === true) {
+      this.setState({
+        move_switch: false,
+        latest_move_X: x,
+        latest_move_Y: y,
+      });
     }
   };
 
@@ -339,7 +340,9 @@ class RadarViewer extends React.Component {
         className={styles.radar}
       />
       <Gauze
-        onMouseDown={this.changeAngle}
+        onMouseDown={this.resetAxis}
+        onMouseMove={this.changeAxis}
+        onMouseUp={this.setAxis}
       />
     </div>;
   }
