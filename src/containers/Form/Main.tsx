@@ -1,6 +1,7 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
+import * as styles from "./styles.scss";
 
 class Form extends React.Component {
   constructor(props) {
@@ -21,8 +22,13 @@ class Form extends React.Component {
     this.setState({[element.name]: element.value});
   }
 
-  onSelectChange() {
-    this.onSubmit();
+  onSelectChange = (event) => {
+    const element = event.target;
+
+    this.props.dispatch({
+      type: "SET_PARAMETER_TYPE",
+      parameterType: parseInt(element.value),
+    });
   }
 
   onSubmit() {
@@ -36,14 +42,14 @@ class Form extends React.Component {
   }
 
   render() {
-    return <div id="form">
-      <form ref="form" action="" method="get">
+    return <div className={styles.form}>
+      <form action="" method="get">
         姓:<input type="text" name="sei" onChange={this.onChange} size="10" />
         名:<input type="text" name="mei" onChange={this.onChange} size="10" />
         <input type="button" onClick={this.onSubmit} value="診断" />
         <select ref="parameter_type"
           onChange={this.onSelectChange}
-          defaultValue="20"
+          defaultValue="8"
         >
           <option value="4">基本</option>
           <option value="8">性格傾向</option>

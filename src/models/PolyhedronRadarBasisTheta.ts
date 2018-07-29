@@ -192,6 +192,7 @@ export default class PolyhedronRadarBasisTheta {
      */
     configureParam(embody, parameters): void {
         if (parameters.length !== embody.parameter_relations.length) {
+            console.log(embody.object_basis);
             throw 'Invalid parameter length(request: ' + parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
         }
 
