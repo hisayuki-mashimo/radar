@@ -58,6 +58,25 @@ class RadarViewer extends React.Component {
   }
 
   componentDidMount() {
+    const frameNode = ReactDOM.findDOMNode(this.refs.radarFrame);
+    const rect = frameNode.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const canvasNode = ReactDOM.findDOMNode(this.refs.radar);
+    const canvasContext = canvasNode.getContext('2d');
+
+    canvasNode.setAttribute('width', '351px');
+    canvasNode.setAttribute('height', '351px');
+
+    this.setState({
+      //radar_center_X: (rect.left + scrollLeft) + radarObject.object_basis._center,
+      //radar_center_Y: (rect.top + scrollTop) + radarObject.object_basis._center,
+      radar_center_X: (rect.left + scrollLeft) + (351 / 2),
+      radar_center_Y: (rect.top + scrollTop) + (351 / 2),
+      canvasContext: canvasContext,
+    });
+    console.log(this.state);
+
     this.makeRadar(this.props);
   }
 
@@ -71,17 +90,7 @@ class RadarViewer extends React.Component {
 
   makeRadar(props) {
     const parameterValue = this.getParameterTypeValue(props.parameterType);
-    const frame_node = ReactDOM.findDOMNode(this.refs.radar_frame);
-    const rect = frame_node.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-    const canvas_node = ReactDOM.findDOMNode(this.refs.radar);
-    const canvas_context = canvas_node.getContext('2d');
-    canvas_node.setAttribute('width', '351px');
-    canvas_node.setAttribute('height', '351px');
-
-    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, canvas_context, { ...this.state.params, ...parameterValue.params });
+    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, this.state.canvasContext, { ...this.state.params, ...parameterValue.params });
     const parameterProgress = this.initParameterProgress(props);
 
     const state = {
@@ -350,7 +359,7 @@ class RadarViewer extends React.Component {
 
   render() {
     return <div
-      ref="radar_frame"
+      ref="radarFrame"
       className={styles.radarFrame}
     >
       <canvas
