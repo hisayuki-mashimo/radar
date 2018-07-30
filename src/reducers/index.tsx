@@ -9,6 +9,9 @@ const getParameterCount = (parameterType) => {
 
     case 8:
       return 6;
+
+    case 20:
+      return 12;
   }
 };
 
@@ -19,7 +22,7 @@ const makeParameters = (parameterType, user) => {
   const parameters = [];
 
   if (!sei && !mei) {
-    for (let n = 0; n < parameterCount; n ++) {
+    for (let n = 0; n < parameterCount; n++) {
       parameters.push(0);
     }
 

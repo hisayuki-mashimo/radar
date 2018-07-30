@@ -84,7 +84,7 @@ class RadarViewer extends React.Component {
     const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, canvas_context, { ...this.state.params, ...parameterValue.params });
     const parameterProgress = this.initParameterProgress(props);
 
-    const state = { 
+    const state = {
       radar_center_X: (rect.left + scrollLeft) + radarObject.object_basis._center,
       radar_center_Y: (rect.top + scrollTop) + radarObject.object_basis._center,
       radarObject: radarObject,
@@ -139,7 +139,7 @@ class RadarViewer extends React.Component {
     };
 
     if (props.parameters) {
-      props.parameters.forEach(function(){
+      props.parameters.forEach(function () {
         state.parametersProgress.push(0);
       });
     }
@@ -159,7 +159,7 @@ class RadarViewer extends React.Component {
 
       let parametersProgress = state.parametersProgress.slice();
 
-      props.parameters.forEach(function(parameter, i){
+      props.parameters.forEach(function (parameter, i) {
         if (parametersProgress[i] >= props.parameters[i]) {
           parametersProgress[i] = props.parameters[i];
         } else {
@@ -296,17 +296,17 @@ class RadarViewer extends React.Component {
         return {
           objectCode: 'TetrahedronTheta',
           params: {
-            parameter_texts:    ['天運', '健康運', '金運', '勝負運'],
-            basis_fill_style:   'rgba(255, 255, 255, 0.0)',
-            basis_stroke_style: 'rgba(  0, 112,  64, 0.5)',
-            shaft_fill_style:   'rgba(255, 255, 255, 0.0)',
-            shaft_stroke_style: 'rgba(  0, 112,  96, 0.5)',
-            meter_fill_style:   'rgba(  0, 216,  96, 0.07)',
-            meter_stroke_style: 'rgba(  0, 160,   0, 0.2)',
-            param_fill_style:   'rgba( 64, 160,  64, 0.5)',
-            param_stroke_style: 'rgba( 56, 156,  56, 0.8)',
-            text_fill_style:    'rgba( 96, 156, 176, 0.3)',
-            text_stroke_style:  'rgba(255, 255, 255, 0.8)',
+            parameter_texts: ['天運', '健康運', '金運', '勝負運'],
+            basis_fill_style: 'rgba(255, 255, 255, 0.0)',
+            basis_stroke_style: 'rgba(0, 112, 64, 0.5)',
+            shaft_fill_style: 'rgba(255, 255, 255, 0.0)',
+            shaft_stroke_style: 'rgba(0, 112, 96, 0.5)',
+            meter_fill_style: 'rgba(0, 216, 96, 0.07)',
+            meter_stroke_style: 'rgba(0, 160, 0, 0.2)',
+            param_fill_style: 'rgba( 64, 160, 64, 0.5)',
+            param_stroke_style: 'rgba( 56, 156, 56, 0.8)',
+            text_fill_style: 'rgba( 96, 156, 176, 0.3)',
+            text_stroke_style: 'rgba(255, 255, 255, 0.8)',
           }
         };
 
@@ -316,14 +316,32 @@ class RadarViewer extends React.Component {
           params: {
             parameter_texts: ['行動力', '適応力', '独創性', '情熱性', '自然愛', 'オーラ'],
             basis_fill_style: 'rgba(255, 255, 255, 0.0)',
-            basis_stroke_style: 'rgba( 96, 184, 240, 0.5)',
+            basis_stroke_style: 'rgba(96, 184, 240, 0.5)',
             shaft_fill_style: 'rgba(255, 255, 255, 0.0)',
-            shaft_stroke_style: 'rgba( 96, 184, 240, 0.5)',
-            meter_fill_style: 'rgba(  0,  64, 160, 0.06)',
-            meter_stroke_style: 'rgba(  0, 132, 255, 0.2)',
+            shaft_stroke_style: 'rgba(96, 184, 240, 0.5)',
+            meter_fill_style: 'rgba(0, 64, 160, 0.06)',
+            meter_stroke_style: 'rgba(0, 132, 255, 0.2)',
             param_fill_style: 'rgba(112, 240, 192, 0.5)',
             param_stroke_style: 'rgba(112, 240, 192, 0.8)',
-            text_fill_style: 'rgba(240,   0,  64, 0.3)',
+            text_fill_style: 'rgba(240, 0, 64, 0.3)',
+            text_stroke_style: 'rgba(255, 255, 255, 0.8)',
+          },
+        };
+
+      case 20:
+        return {
+          objectCode: 'IcosahedronTheta',
+          params: {
+            parameter_texts: ['体力', '攻撃', '防御', '知力', '魔力', '指揮', '話術', '操縦', '変装', '料理', '品位', '理力'],
+            basis_fill_style: 'rgba(64, 0, 32, 0.07)',
+            basis_stroke_style: 'rgba(160, 0, 160, 0.2)',
+            shaft_fill_style: 'rgba(255, 255, 255, 0.0)',
+            shaft_stroke_style: 'rgba(184, 0, 32, 0.4)',
+            meter_fill_style: 'rgba(64, 0, 32, 0.08)',
+            meter_stroke_style: 'rgba(160, 0, 160, 0.1)',
+            param_fill_style: 'rgba(0, 80, 255, 0.5)',
+            param_stroke_style: 'rgba(0, 80, 255, 0.8)',
+            text_fill_style: 'rgba(0, 96, 112, 0.3)',
             text_stroke_style: 'rgba(255, 255, 255, 0.8)',
           },
         };
