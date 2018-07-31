@@ -90,25 +90,6 @@ class RadarViewer extends React.Component {
         }, 50)
       });
     }
-
-    document.onkeydown = function (event) {
-      if (event.keyCode == 13) {
-        if (ref.state.animation) {
-          clearInterval(ref.state.animation);
-        }
-
-        if (ref.state.animation_switch === false) {
-          ref.setState({
-            animation_switch: true,
-            animation: setInterval(function () {
-              ref.execute(ref.state);
-            }, 50)
-          });
-        } else {
-          ref.setState({ animation_switch: false });
-        }
-      }
-    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,8 +99,26 @@ class RadarViewer extends React.Component {
       this.state.parameterManager.setParameters(nextProps.parameters);
     }
   }
+  
+  render() {
+    return <div
+      ref="radarFrame"
+      className={styles.radarFrame}
+    >
+      <canvas
+        ref="radar"
+        className={styles.radar}
+      />
+      <Gauze
+        onMouseDown={this.onMouseDown}
+        onMouseMove={this.onMouseMove}
+        onMouseUp={this.onMouseUp}
+        onKeyDown={this.onKeyDown}
+      />
+    </div>;
+  }
 
-  makeRadar(props) {
+  makeRadar = (props) => {
     const parameterValue = this.getParameterTypeValue(props.parameterType);
     const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, { ...this.state.params, ...parameterValue.params });
     this.state.parameterManager.setParameters(props.parameters);
@@ -134,7 +133,7 @@ class RadarViewer extends React.Component {
       ...this.state,
       ...state,
     });
-  }
+  };
 
   execute = (state) => {
     const { radarObject } = state;
@@ -151,7 +150,7 @@ class RadarViewer extends React.Component {
     radarObject.setDirection(rotate_theta, vector_theta, length_theta);
     radarObject.output();
     this.state.parameterManager.progress();
-  }
+  };
 
   onMouseDown = (x, y) => {
     this.setState({ move_switch: true });
@@ -170,6 +169,23 @@ class RadarViewer extends React.Component {
       this.setState({ move_switch: false });
 
       this.state.coordinateManager.setAxis(x, y);
+    }
+  };
+  
+  onKeyDown = () => {
+    if (this.state.animation) {
+      clearInterval(this.state.animation);
+    }
+
+    if (this.state.animation_switch === false) {
+      this.setState({
+        animation_switch: true,
+        animation: setInterval(function () {
+          this.execute(this.state);
+        }, 50)
+      });
+    } else {
+      this.setState({ animation_switch: false });
     }
   };
 
@@ -229,23 +245,6 @@ class RadarViewer extends React.Component {
           },
         };
     }
-  }
-
-  render() {
-    return <div
-      ref="radarFrame"
-      className={styles.radarFrame}
-    >
-      <canvas
-        ref="radar"
-        className={styles.radar}
-      />
-      <Gauze
-        onMouseDown={this.onMouseDown}
-        onMouseMove={this.onMouseMove}
-        onMouseUp={this.onMouseUp}
-      />
-    </div>;
   }
 }
 
