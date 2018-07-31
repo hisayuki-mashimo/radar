@@ -69,7 +69,6 @@ class RadarViewer extends React.Component {
     canvasNode.setAttribute('height', '351px');
 
     this.state.radarOperater.setCanvasContext(canvasContext);
-
     this.state.coordinateManager.setParams({
       center_X: (rect.left + scrollLeft) + (351 / 2),
       center_Y: (rect.top + scrollTop) + (351 / 2),
@@ -82,12 +81,12 @@ class RadarViewer extends React.Component {
 
     if (this.state.animation_switch === true) {
       if (this.state.animation) {
-        clearInterval(ref.state.animation);
+        clearInterval(this.state.animation);
       }
 
       this.setState({
         animation: setInterval(function () {
-          ref.execute(ref.props, ref.state);
+          ref.execute(ref.state);
         }, 50)
       });
     }
@@ -102,7 +101,7 @@ class RadarViewer extends React.Component {
           ref.setState({
             animation_switch: true,
             animation: setInterval(function () {
-              ref.execute(ref.props, ref.state);
+              ref.execute(ref.state);
             }, 50)
           });
         } else {
@@ -131,13 +130,13 @@ class RadarViewer extends React.Component {
 
     this.setState(state);
 
-    this.execute(props, {
+    this.execute({
       ...this.state,
       ...state,
     });
   }
 
-  execute = (props, state) => {
+  execute = (state) => {
     const { radarObject } = state;
 
     if (this.state.move_switch === true) {
