@@ -1,5 +1,6 @@
 import Gauze from "containers/Gauze/Main";
-import GeometryCalculator from "models/GeometryCalculator";
+import CoordinateManager from "models/CoordinateManager";
+import ParameterManager from "models/ParameterManager";
 import PolyhedronBasisTheta from "models/PolyhedronBasisTheta";
 import PolyhedronRadarBasisTheta from "models/PolyhedronRadarBasisTheta";
 import React from "react";
@@ -22,22 +23,7 @@ class RadarViewer extends React.Component {
     const operater = new PolyhedronBasisTheta();
     const radarOperater = new PolyhedronRadarBasisTheta(operater);
 
-    this.state = {
-      radarOperater: radarOperater,
-      radarObject: null,
-      parametersProgress: [],
-      radar_center_X: 0,
-      radar_center_Y: 0,
-      params: {
-        alpha: 100,
-        size: 350,
-      },
-      move_type: "vector",
-      move_switch: false,
-      latest_base_X: 0,
-      latest_base_Y: 0,
-      latest_move_X: 0,
-      latest_move_Y: 0,
+    const coordinateParams = {
       move_rotate_theta: (0) / 180 * Math.PI,
       move_vector_theta: (30) / 180 * Math.PI,
       move_length_theta: (0) / 180 * Math.PI,
@@ -47,10 +33,24 @@ class RadarViewer extends React.Component {
       rotate_theta_base: (15) / 180 * Math.PI,
       vector_theta_base: (0) / 180 * Math.PI,
       length_theta_base: (0) / 180 * Math.PI,
-      rotate_theta: 0,
-      vector_theta: 0,
-      length_theta: 0,
-      theta_R: Math.PI / 2,
+    };
+
+    const coordinateManager = new CoordinateManager(coordinateParams);
+    const parameterManager = new ParameterManager(props.parameters);
+
+    this.state = {
+      radarOperater: radarOperater,
+      radarObject: null,
+      coordinateManager: coordinateManager,
+      parameterManager: parameterManager,
+      radar_center_X: 0,
+      radar_center_Y: 0,
+      params: {
+        alpha: 100,
+        size: 350,
+      },
+      move_type: "vector",
+      move_switch: false,
       progressCount: 100,
       animation: null,
       animation_switch: true,
@@ -68,46 +68,29 @@ class RadarViewer extends React.Component {
     canvasNode.setAttribute('width', '351px');
     canvasNode.setAttribute('height', '351px');
 
-    this.setState({
-      //radar_center_X: (rect.left + scrollLeft) + radarObject.object_basis._center,
-      //radar_center_Y: (rect.top + scrollTop) + radarObject.object_basis._center,
-      radar_center_X: (rect.left + scrollLeft) + (351 / 2),
-      radar_center_Y: (rect.top + scrollTop) + (351 / 2),
-      canvasContext: canvasContext,
+    this.state.radarOperater.setCanvasContext(canvasContext);
+
+    this.state.coordinateManager.setParams({
+      center_X: (rect.left + scrollLeft) + (351 / 2),
+      center_Y: (rect.top + scrollTop) + (351 / 2),
+      max_radius: (351 / 2),
     });
-    console.log(this.state);
 
     this.makeRadar(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.parameterType !== this.props.parameterType) {
-      this.makeRadar(nextProps);
-    } else {
-      this.initParameterProgress(nextProps);
-    }
-  }
-
-  makeRadar(props) {
-    const parameterValue = this.getParameterTypeValue(props.parameterType);
-    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, this.state.canvasContext, { ...this.state.params, ...parameterValue.params });
-    const parameterProgress = this.initParameterProgress(props);
-
-    const state = {
-      radar_center_X: (rect.left + scrollLeft) + radarObject.object_basis._center,
-      radar_center_Y: (rect.top + scrollTop) + radarObject.object_basis._center,
-      radarObject: radarObject,
-    };
-
-    this.setState(state);
-
-    this.execute(props, {
-      ...this.state,
-      ...state,
-      ...parameterProgress,
-    });
 
     const ref = this;
+
+    if (this.state.animation_switch === true) {
+      if (this.state.animation) {
+        clearInterval(ref.state.animation);
+      }
+
+      this.setState({
+        animation: setInterval(function () {
+          ref.execute(ref.props, ref.state);
+        }, 50)
+      });
+    }
 
     document.onkeydown = function (event) {
       if (event.keyCode == 13) {
@@ -127,175 +110,67 @@ class RadarViewer extends React.Component {
         }
       }
     };
+  }
 
-    if (ref.state.animation_switch === true) {
-      if (ref.state.animation) {
-        clearInterval(ref.state.animation);
-      }
-
-      ref.setState({
-        animation: setInterval(function () {
-          ref.execute(ref.props, ref.state);
-        }, 50)
-      });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.parameterType !== this.props.parameterType) {
+      this.makeRadar(nextProps);
+    } else {
+      this.state.parameterManager.setParameters(nextProps.parameters);
     }
   }
 
-  initParameterProgress = (props) => {
-    const state = {
-      parametersProgress: [],
-      progressCount: 0
-    };
+  makeRadar(props) {
+    const parameterValue = this.getParameterTypeValue(props.parameterType);
+    const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, { ...this.state.params, ...parameterValue.params });
+    this.state.parameterManager.setParameters(props.parameters);
 
-    if (props.parameters) {
-      props.parameters.forEach(function () {
-        state.parametersProgress.push(0);
-      });
-    }
+    const state = {
+      radarObject: radarObject,
+    };
 
     this.setState(state);
 
-    return state;
+    this.execute(props, {
+      ...this.state,
+      ...state,
+    });
   }
 
   execute = (props, state) => {
     const { radarObject } = state;
 
-    let progressCount = state.progressCount;
-
-    if (progressCount < 100) {
-      const ref = this;
-
-      let parametersProgress = state.parametersProgress.slice();
-
-      props.parameters.forEach(function (parameter, i) {
-        if (parametersProgress[i] >= props.parameters[i]) {
-          parametersProgress[i] = props.parameters[i];
-        } else {
-          parametersProgress[i] += 2;
-        }
-      });
-
-      this.setState({
-        parametersProgress: parametersProgress,
-        progressCount: progressCount + 1,
-      });
-    }
-
     if (this.state.move_switch === true) {
-      this.setState({
-        rotate_theta_base: state.rotate_theta,
-        vector_theta_base: state.vector_theta,
-        length_theta_base: state.length_theta,
-      });
-
-      if (state.move_type === "vector") {
-        var diff_X = state.latest_move_X - state.latest_base_X;
-        var diff_Y = state.latest_move_Y - state.latest_base_Y;
-
-        var direction_X = (diff_X > 0) ? -1 : 1;
-        var direction_Y = (diff_Y > 0) ? 1 : -1;
-        var abs_X = Math.abs(diff_X);
-        var abs_Y = Math.abs(diff_Y);
-
-        if (abs_X > 30) abs_X = 30;
-        if (abs_Y > 30) abs_Y = 30;
-        var theta_diff_X = (abs_X / 200) * direction_X;
-        var theta_diff_Y = (abs_Y / 200) * direction_Y;
-
-        this.setState({ move_rotate_theta: 0 });
-        this.setState({ move_vector_theta: GeometryCalculator.getThetaByLengthes('Y', theta_diff_X, theta_diff_Y) * -1 + Math.PI });
-        this.setState({ move_length_theta: 0 });
-        this.setState({ diff_length_theta: GeometryCalculator.getLengthByPytha(null, theta_diff_X, theta_diff_Y) });
-        this.setState({ diff_rotate_theta: 0 });
-      } else {
-        var LD0X = state.latest_base_X - state.radar_center_X;
-        var LD0Y = state.latest_base_Y - state.radar_center_Y;
-        var LD1X = state.latest_move_X - state.radar_center_X;
-        var LD1Y = state.latest_move_Y - state.radar_center_Y;
-
-        var TD0 = GeometryCalculator.getThetaByLengthes('Y', LD0X, LD0Y);
-        var TD1 = GeometryCalculator.getThetaByLengthes('Y', LD1X, LD1Y);
-        var TD2 = TD1 - TD0;
-
-        var direction_T = (TD2 > 0) ? 1 : -1;
-        var abs_T = Math.abs(TD2);
-        if (abs_T > 0.2) abs_T = 0.2;
-        var theta_diff = abs_T * direction_T;
-
-        this.setState({ move_rotate_theta: 0 });
-        this.setState({ move_length_theta: 0 });
-        this.setState({ diff_length_theta: 0 });
-        this.setState({ diff_rotate_theta: theta_diff });
-      }
-
-      this.setState({ latest_base_X: state.latest_move_X });
-      this.setState({ latest_base_Y: state.latest_move_Y });
+      this.state.coordinateManager.move();
     }
 
-    if (state.diff_length_theta > 0) {
-      var thetas = GeometryCalculator.getThetasByRelative(
-        state.rotate_theta_base,
-        state.vector_theta_base,
-        state.length_theta_base,
-        state.move_rotate_theta,
-        state.move_vector_theta,
-        state.move_length_theta,
-      );
+    this.state.coordinateManager.slide();
 
-      this.setState({
-        move_length_theta: state.move_length_theta + state.diff_length_theta,
-        rotate_theta: thetas.rotate_theta,
-        vector_theta: thetas.vector_theta,
-        length_theta: thetas.length_theta,
-      });
-    } else if (state.diff_rotate_theta != 0) {
-      this.setState({
-        move_rotate_theta: state.move_rotate_theta + state.diff_rotate_theta,
-        rotate_theta: state.rotate_theta_base + state.move_rotate_theta,
-        vector_theta: state.vector_theta_base + state.move_rotate_theta,
-      });
-    }
+    const { rotate_theta, vector_theta, length_theta } = this.state.coordinateManager.params;
 
-    radarObject.configureParam(state.parametersProgress);
-    radarObject.setDirection(state.rotate_theta, state.vector_theta, state.length_theta);
+    radarObject.configureParam(this.state.parameterManager.params.parametersProgress);
+    radarObject.setDirection(rotate_theta, vector_theta, length_theta);
     radarObject.output();
+    this.state.parameterManager.progress();
   }
 
-  resetAxis = (x, y) => {
+  onMouseDown = (x, y) => {
     this.setState({ move_switch: true });
-    this.setState({ latest_move_X: x });
-    this.setState({ latest_move_Y: y });
-    this.setState({ latest_base_X: x });
-    this.setState({ latest_base_Y: y });
 
-    var relative_diff_X = this.state.latest_base_X - this.state.radar_center_X;
-    var relative_diff_Y = this.state.latest_base_Y - this.state.radar_center_Y;
-    var relative_diff_radius = GeometryCalculator.getLengthByPytha(null, relative_diff_X, relative_diff_Y);
+    this.state.coordinateManager.resetAxis(x, y);
+  };
 
-    if (relative_diff_radius <= this.state.radarObject.max_radius) {
-      this.setState({ move_type: "vector" });
-    } else {
-      this.setState({ move_type: "rotate" });
+  onMouseMove = (x, y) => {
+    if (this.state.move_switch === true) {
+      this.state.coordinateManager.changeAxis(x, y);
     }
   };
 
-  changeAxis = (x, y) => {
+  onMouseUp = (x, y) => {
     if (this.state.move_switch === true) {
-      this.setState({
-        latest_move_X: x,
-        latest_move_Y: y,
-      });
-    }
-  };
+      this.setState({ move_switch: false });
 
-  setAxis = (x, y) => {
-    if (this.state.move_switch === true) {
-      this.setState({
-        move_switch: false,
-        latest_move_X: x,
-        latest_move_Y: y,
-      });
+      this.state.coordinateManager.setAxis(x, y);
     }
   };
 
@@ -367,9 +242,9 @@ class RadarViewer extends React.Component {
         className={styles.radar}
       />
       <Gauze
-        onMouseDown={this.resetAxis}
-        onMouseMove={this.changeAxis}
-        onMouseUp={this.setAxis}
+        onMouseDown={this.onMouseDown}
+        onMouseMove={this.onMouseMove}
+        onMouseUp={this.onMouseUp}
       />
     </div>;
   }

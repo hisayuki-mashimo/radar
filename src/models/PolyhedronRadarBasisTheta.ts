@@ -28,6 +28,8 @@ export default class PolyhedronRadarBasisTheta {
 
         object_basis: null,
 
+        canvas_context: null,
+
         parameters: null,
         parameter_texts: null,
         parameter_relations: null,
@@ -45,19 +47,22 @@ export default class PolyhedronRadarBasisTheta {
         this.operator_basis = operator_basis;
     }
 
+    setCanvasContext(canvas_context) {
+        this.property.canvas_context = canvas_context;
+    }
+
     /**
      * 実体化
      *
-     * @param   string          embody_key
-     * @param   HTMLDivElement  canvas_context
+     * @param   string  embody_key
      * @param   object  params
      */
-    summons(embody_key, canvas_context, params?: {}): Object | void {
+    summons(embody_key, params?: {}): Object | void {
         try {
             // 実体化
             var embody = {
-                "basis": this,
-                "object_basis": this.operator_basis.summons(embody_key, canvas_context, params)
+                basis: this,
+                object_basis: this.operator_basis.summons(embody_key, this.property.canvas_context, params)
             };
 
             // プロパティ定義
