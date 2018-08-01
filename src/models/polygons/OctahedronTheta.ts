@@ -8,7 +8,7 @@ class OctahedronTheta {
      *
      */
     configure() {
-        var getLengthByPytha = this.basis.geometry_calculator.getLengthByPytha;
+        //var getLengthByPytha = this.basis.geometry_calculator.getLengthByPytha;
 
         var pai = Math.PI;
 
@@ -19,6 +19,7 @@ class OctahedronTheta {
             C: 2
         };
 
+        /*
         var LX_A00 = this.alpha;
         var LX_A01 = LX_A00 * (RA_A00.B / RA_A00.C);
         var LX_A02 = LX_A00 * (RA_A00.A / RA_A00.C);
@@ -28,6 +29,11 @@ class OctahedronTheta {
         var LT_A00 = LX_A04;
 
         var TX_A00 = Math.asin(LX_A00 / LX_A04);
+        */
+        var LX_A00 = this.alpha * (RA_A00.A / RA_A00.B);
+
+        var LT_A00 = this.alpha;
+        var TX_A00 = Math.acos(LX_A00 / LT_A00);
 
         var TY_A00 = 0;
 
