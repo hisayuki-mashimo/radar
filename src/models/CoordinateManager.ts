@@ -92,6 +92,8 @@ class CoordinateManager {
 
   slide() {
     if (this.params.diff_length_theta > 0) {
+      this.params.move_length_theta += this.params.diff_length_theta;
+
       const thetas = GeometryCalculator.getThetasByRelative(
         this.params.rotate_theta_base,
         this.params.vector_theta_base,
@@ -101,12 +103,11 @@ class CoordinateManager {
         this.params.move_length_theta,
       );
 
-      this.params.move_length_theta = this.params.move_length_theta + this.params.diff_length_theta;
       this.params.rotate_theta = thetas.rotate_theta;
       this.params.vector_theta = thetas.vector_theta;
       this.params.length_theta = thetas.length_theta;
     } else if (this.params.diff_rotate_theta != 0) {
-      this.params.move_rotate_theta = this.params.move_rotate_theta + this.params.diff_rotate_theta;
+      this.params.move_rotate_theta += this.params.diff_rotate_theta;
       this.params.rotate_theta = this.params.rotate_theta_base + this.params.move_rotate_theta;
       this.params.vector_theta = this.params.vector_theta_base + this.params.move_rotate_theta;
     }
