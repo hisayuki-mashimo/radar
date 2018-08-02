@@ -44,8 +44,8 @@ class IcosahedronTheta {
         */
         var RX_A00 = finalizeRatioByPytha({
             A: null,
-            B: RA_A01.B,
-            C: RA_A01.D,
+            B: 1,
+            C: RA_A01.D / RA_A01.C,
         });
         var LX_A00 = this.alpha * (RX_A00.B / RX_A00.A);
         var LX_A01 = LX_A00 * (RA_A00.B / RA_A00.A);
@@ -53,7 +53,7 @@ class IcosahedronTheta {
 
         var LT_A00 = this.alpha;
         var TX_A00 = Math.asin(LX_A02 / this.alpha);
-        var TX_B00 = TX_A00 + (Math.asin(LX_A01 / this.alpha) * 2);
+        var TX_B00 = TX_A00 + (Math.asin(LX_A00 / this.alpha) * 2);
 
         var TY_A00 = 0;
 
