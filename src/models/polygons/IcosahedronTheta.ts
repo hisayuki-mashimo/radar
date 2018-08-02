@@ -8,6 +8,8 @@ class IcosahedronTheta {
      *
      */
     configure() {
+        var finalizeRatioByPytha = this.basis.geometry_calculator.finalizeRatioByPytha;
+
         // 正三角形比率
         var RA_A00 = {
             A: 1,
@@ -23,6 +25,7 @@ class IcosahedronTheta {
             D: (4 * Math.pow(Math.cos(Math.PI * 2 / 10), 2))
         };
 
+        /*
         var LX_A00 = this.alpha;
         var LX_A01 = LX_A00 * (RA_A00.B / RA_A00.C);
         var LX_A02 = LX_A00 * (RA_A00.A / RA_A00.C);
@@ -38,6 +41,19 @@ class IcosahedronTheta {
 
         var TX_A00 = Math.asin(LX_A00 / LX_A05);
         var TX_B00 = Math.PI - Math.acos(LX_B02 / LX_A05);
+        */
+        var RX_A00 = finalizeRatioByPytha({
+            A: null,
+            B: RA_A01.B,
+            C: RA_A01.D,
+        });
+        var LX_A00 = this.alpha * (RX_A00.B / RX_A00.A);
+        var LX_A01 = LX_A00 * (RA_A00.B / RA_A00.A);
+        var LX_A02 = LX_A01 / 3 * 2;
+
+        var LT_A00 = this.alpha;
+        var TX_A00 = Math.asin(LX_A02 / this.alpha);
+        var TX_B00 = TX_A00 + (Math.asin(LX_A01 / this.alpha) * 2);
 
         var TY_A00 = 0;
 

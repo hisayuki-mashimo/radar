@@ -8,6 +8,7 @@ class TetrahedronTheta {
      *
      */
     configure() {
+        /*
         // 正三角形比率
         var RA_A00 = {
             A: 1,
@@ -30,11 +31,16 @@ class TetrahedronTheta {
 
         var TX_A00 = Math.asin(LX_A00 / LX_A05);
         var TX_Z00 = Math.PI;
+        */
+        var LX_A00 = this.alpha / 3;
 
+        var LT_A00 = this.alpha;
+        var TX_A00 = Math.acos(LX_A00 / this.alpha);
         var TY_A00 = Math.PI * 2 / 3 * 0;
         var TY_A01 = Math.PI * 2 / 3 * 1;
         var TY_A02 = Math.PI * 2 / 3 * 2;
         var TY_Z00 = 0;
+        var TX_Z00 = Math.PI;
 
         this.reles = {
             A0: { R: LT_A00, X: TX_A00, Y: TY_A00 },
