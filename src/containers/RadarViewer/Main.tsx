@@ -46,7 +46,7 @@ class RadarViewer extends React.Component {
       radar_center_X: 0,
       radar_center_Y: 0,
       params: {
-        alpha: 100,
+        alpha: 125,
         size: 350,
       },
       move_type: "vector",
@@ -99,7 +99,7 @@ class RadarViewer extends React.Component {
       this.state.parameterManager.setParameters(nextProps.parameters);
     }
   }
-  
+
   render() {
     return <div
       ref="radarFrame"
@@ -171,7 +171,7 @@ class RadarViewer extends React.Component {
       this.state.coordinateManager.setAxis(x, y);
     }
   };
-  
+
   onKeyDown = () => {
     if (this.state.animation) {
       clearInterval(this.state.animation);
@@ -238,8 +238,8 @@ class RadarViewer extends React.Component {
             shaft_stroke_style: 'rgba(184, 0, 32, 0.4)',
             meter_fill_style: 'rgba(64, 0, 32, 0.1)',
             meter_stroke_style: 'rgba(160, 0, 160, 0.1)',
-            param_fill_style: 'rgba(128, 80, 255, 0.5)',
-            param_stroke_style: 'rgba(128, 96, 255, 0.8)',
+            param_fill_style: 'rgba(192, 80, 100, 0.5)',
+            param_stroke_style: 'rgba(192, 80, 100, 0.8)',
             text_fill_style: 'rgba(0, 96, 112, 0.3)',
             text_stroke_style: 'rgba(255, 255, 255, 0.8)',
           },
