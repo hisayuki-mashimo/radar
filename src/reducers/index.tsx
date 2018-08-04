@@ -7,8 +7,14 @@ const getParameterCount = (parameterType) => {
     case 4:
       return 4;
 
+    case 6:
+      return 8;
+
     case 8:
       return 6;
+
+    case 12:
+      return 20;
 
     case 20:
       return 12;
@@ -29,7 +35,7 @@ const makeParameters = (parameterType, user) => {
     return parameters;
   }
 
-  const md5String = CybozuLabs.MD5.calc(sei + '+=+' + mei);
+  const md5String = CybozuLabs.MD5.calc(sei + '+=+' + mei) + CybozuLabs.MD5.calc(mei + '+=+' + sei);
   const strings = md5String.split('');
 
   for (let i = 0; i < parameterCount; i++) {

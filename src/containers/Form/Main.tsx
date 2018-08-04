@@ -52,8 +52,10 @@ class Form extends React.Component {
           defaultValue="8"
         >
           <option value="4">基本</option>
+          <option value="6">教科</option>
           <option value="8">性格傾向</option>
-          <option value="20">適正能力</option>
+          <option value="12">適正能力</option>
+          <option value="20">耐性能力</option>
         </select>
       </form>
     </div>;
