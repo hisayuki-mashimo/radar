@@ -180,9 +180,9 @@ class RadarViewer extends React.Component {
     if (this.state.animation_switch === false) {
       this.setState({
         animation_switch: true,
-        animation: setInterval(function () {
-          this.execute(this.state);
-        }, 50)
+        animation: setInterval(function (ref) {
+          ref.execute(ref.state);
+        }, 50, this)
       });
     } else {
       this.setState({ animation_switch: false });
@@ -245,23 +245,23 @@ class RadarViewer extends React.Component {
           },
         };
 
-        case 12:
-          return {
-            objectCode: 'DodecahedronTheta',
-            params: {
-              parameter_texts: ['体力', '攻撃', '防御', '知力', '魔力', '指揮', '話術', '操縦', '変装', '料理', '品位', '理力', '感性', '人徳', '技術', '包容', '直感', '視力', '霊感', '芸術'],
-              basis_fill_style: 'rgba(0, 0, 0, 0.0)',
-              basis_stroke_style: 'rgba(192, 0, 128, 0.5)',
-              shaft_fill_style: 'rgba(0, 0, 0, 0.0)',
-              shaft_stroke_style: 'rgba(184, 0, 32, 0.4)',
-              meter_fill_style: 'rgba(80, 0, 40, 0.15)',
-              meter_stroke_style: 'rgba(80, 0, 40, 0.4)',
-              param_fill_style: 'rgba(128, 20, 172, 0.4)',
-              param_stroke_style: 'rgba(128, 20, 172, 0.8)',
-              text_fill_style: 'rgba(0, 96, 112, 0.3)',
-              text_stroke_style: 'rgba(255, 255, 255, 0.8)',
-            },
-          };
+      case 12:
+        return {
+          objectCode: 'DodecahedronTheta',
+          params: {
+            parameter_texts: ['体力', '攻撃', '防御', '知力', '魔力', '指揮', '話術', '操縦', '変装', '料理', '品位', '理力', '感性', '人徳', '技術', '包容', '直感', '視力', '霊感', '芸術'],
+            basis_fill_style: 'rgba(0, 0, 0, 0.0)',
+            basis_stroke_style: 'rgba(192, 0, 128, 0.5)',
+            shaft_fill_style: 'rgba(0, 0, 0, 0.0)',
+            shaft_stroke_style: 'rgba(184, 0, 32, 0.4)',
+            meter_fill_style: 'rgba(80, 0, 40, 0.15)',
+            meter_stroke_style: 'rgba(80, 0, 40, 0.4)',
+            param_fill_style: 'rgba(128, 20, 172, 0.4)',
+            param_stroke_style: 'rgba(128, 20, 172, 0.8)',
+            text_fill_style: 'rgba(0, 96, 112, 0.3)',
+            text_stroke_style: 'rgba(255, 255, 255, 0.8)',
+          },
+        };
 
       case 20:
         return {
