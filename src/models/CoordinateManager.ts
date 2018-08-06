@@ -1,7 +1,30 @@
 import GeometryCalculator from "models/GeometryCalculator";
 
+export interface Params {
+  center_X: number;
+  center_Y: number;
+  max_radius: number;
+  move_type: "vector" | "rotate";
+  latest_base_X: number;
+  latest_base_Y: number;
+  latest_move_X: number;
+  latest_move_Y: number;
+  move_rotate_theta: number;
+  move_vector_theta: number;
+  move_length_theta: number;
+  diff_vector_theta: number;
+  diff_rotate_theta: number;
+  diff_length_theta: number;
+  rotate_theta_base: number;
+  vector_theta_base: number;
+  length_theta_base: number;
+  rotate_theta: number;
+  vector_theta: number;
+  length_theta: number;
+};
+
 class CoordinateManager {
-  params = {
+  params: Params = {
     center_X: 0,
     center_Y: 0,
     max_radius: 0,
@@ -24,13 +47,13 @@ class CoordinateManager {
     length_theta: 0,
   };
 
-  constructor(params = undefined) {
+  constructor(params?: Partial<Params>) {
     if (params) {
       this.setParams(params);
     }
   }
 
-  setParams(params) {
+  setParams(params?: Partial<Params>) {
     for (let key in params) {
       if (this.params[key] !== undefined) {
         this.params[key] = params[key];

@@ -5,13 +5,13 @@ class ParameterManager {
     progressCount: 100,
   };
 
-  constructor(parameters = undefined) {
+  constructor(parameters?: Array<number>) {
     if (parameters) {
       this.setParameters(parameters);
     }
   }
 
-  setParameters(parameters) {
+  setParameters(parameters: Array<number>) {
     this.params.parameters = parameters;
     this.params.parametersProgress = [];
     this.params.progressCount = 0;
