@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.26.0",
     "immutable": "4.0.0-rc.1",
     "lint": "^1.1.2",
     "postcss-loader": "^2.1.5",
@@ -12,6 +14,7 @@
     "react-dom": "^16.3.1",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.3.0",
     "tslint": "^5.9.1",
     "typed-css-modules": "^0.3.4",
     "typed-css-modules-loader": "^0.0.13",

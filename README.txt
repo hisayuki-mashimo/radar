@@ -32,6 +32,9 @@ yarn add typed-css-modules typed-css-modules-loader
 yarn add postcss-loader
 yarn add immutable
 vi webpack.config.js
+yarn add babel-runtime
+yarn add babel-plugin-transform-runtime
+yarn add redux-thunk
 
 yarn run build --mode=development
 yarn webpack-dev-server --mode=development

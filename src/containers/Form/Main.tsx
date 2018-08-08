@@ -1,7 +1,15 @@
+import { requestUser } from "actions";
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
+import { bindActionCreators, Dispatch } from "redux";
 import * as styles from "./styles.scss";
+
+const mapDispatchToProps = (dispatch: Dispatch<{}>) => ({
+  ...bindActionCreators({
+    requestUser,
+  }, dispatch)
+});
 
 class Form extends React.Component {
   constructor(props) {
@@ -16,11 +24,11 @@ class Form extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChange(event) {
+  onChange = (event) => {
     const element = event.target;
 
     this.setState({[element.name]: element.value});
-  }
+  };
 
   onSelectChange = (event) => {
     const element = event.target;
@@ -29,17 +37,21 @@ class Form extends React.Component {
       type: "SET_PARAMETER_TYPE",
       parameterType: parseInt(element.value),
     });
-  }
+  };
 
-  onSubmit() {
-    this.props.dispatch({
+  onSubmit = async () => {
+    /*this.props.dispatch({
       type: "SET_USER",
       user: {
         sei: this.state.sei,
         mei: this.state.mei,
       },
+    });*/
+    await this.props.requestUser({
+      sei: this.state.sei,
+      mei: this.state.mei,
     });
-  }
+  };
 
   render() {
     return <div className={styles.form}>
@@ -62,4 +74,4 @@ class Form extends React.Component {
   }
 }
 
-export default connect()(Form);
+export default connect(null, mapDispatchToProps)(Form);
