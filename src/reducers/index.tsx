@@ -42,14 +42,13 @@ const reducer: Reducer<State> = (
   switch (action.type) {
     case "SET_USER":
       return state.set("user", action.user);
+    case "SET_PARAMETER_TYPE":
+      return state.set("parameterType", action.parameterType);
     case "SET_PARAMETERS":
       return state.set("parameters", action.parameters);
-    case "SET_PARAMETER_TYPE":
-      parameters = makeParameters(action.parameterType, state.user);
-
+    case "RESET_PARAMETERS":
       return state.set("parameterType", action.parameterType)
-        .set("parameters", parameters);
-
+        .set("parameters", action.parameters);
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import { requestUser } from "actions";
+import { requestParameterType, requestUser } from "actions";
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
@@ -7,6 +7,7 @@ import * as styles from "./styles.scss";
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>) => ({
   ...bindActionCreators({
+    requestParameterType,
     requestUser,
   }, dispatch)
 });
@@ -30,13 +31,18 @@ class Form extends React.Component {
     this.setState({ [element.name]: element.value });
   };
 
-  onSelectChange = (event) => {
+  onSelectChange = async (event) => {
     const element = event.target;
 
+    /*
     this.props.dispatch({
       type: "SET_PARAMETER_TYPE",
       parameterType: parseInt(element.value),
     });
+    */
+    await this.props.requestParameterType(
+      parseInt(element.value),
+    );
   };
 
   onSubmit = async () => {

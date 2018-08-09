@@ -6,8 +6,19 @@ export const setUser = (user: { sei: string, mei: string }): Action => ({
   user,
 });
 
+export const setParameterType = (parameterType: number): Action => ({
+  type: "SET_PARAMETER_TYPE",
+  parameterType,
+});
+
 export const setParameters = (parameters: Array<number>): Action => ({
   type: "SET_PARAMETERS",
+  parameters,
+});
+
+export const resetParameters = (parameterType: number, parameters: Array<number>): Action => ({
+  type: "RESET_PARAMETERS",
+  parameterType,
   parameters,
 });
 
@@ -20,7 +31,7 @@ export const fetchParameters = async (sei: string, mei: string, parameterType: n
       mode: "cors",
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        //"Content-Type": "application/json",
         "Content-Type": "application/x-www-form-urlencoded;application/json;charset=utf-8",
         //"X-Requested-With": "XMLHttpRequest",
       },
@@ -32,11 +43,56 @@ export const fetchParameters = async (sei: string, mei: string, parameterType: n
 
 export const requestUser = (sei: string, mei: string): ThunkAction<Promise<void>, {}, {}> => (
   async (dispatch, getState) => {
-    const parameterType = 1;//getState().parameterType;
+    const parameterType = getState().parameterType;
     const response = await fetchParameters(sei, mei, parameterType);
     const parameters = await response.json();
 
     dispatch(setUser({ sei, mei }));
     dispatch(setParameters(parameters));
+  }
+);
+
+export const requestParameterType = (parameterType): ThunkAction<Promise<void>, {}, {}> => (
+  async (dispatch, getState) => {
+    const user = getState().user;
+    let parameters = [];
+
+    if (user.sei || user.mei) {
+      const response = await fetchParameters(user.sei, user.mei, parameterType);
+      parameters = await response.json();
+    } else {
+      let parameterCount = 0;
+
+      switch (parameterType) {
+        case 4:
+          parameterCount = 4;
+          break;
+
+        case 6:
+          parameterCount = 8;
+          break;
+
+        case 8:
+          parameterCount = 6;
+          break;
+
+        case 12:
+          parameterCount = 20;
+          break;
+
+        case 20:
+          parameterCount = 12;
+          break;
+      }
+
+      for (let i = 0; i < parameterCount; i ++) {
+        parameters.push(0);
+      }
+    }
+
+    dispatch(resetParameters(
+      parameterType,
+      parameters,
+    ));
   }
 );
