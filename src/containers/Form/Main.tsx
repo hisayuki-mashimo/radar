@@ -27,7 +27,7 @@ class Form extends React.Component {
   onChange = (event) => {
     const element = event.target;
 
-    this.setState({[element.name]: element.value});
+    this.setState({ [element.name]: element.value });
   };
 
   onSelectChange = (event) => {
@@ -47,10 +47,10 @@ class Form extends React.Component {
         mei: this.state.mei,
       },
     });*/
-    await this.props.requestUser({
-      sei: this.state.sei,
-      mei: this.state.mei,
-    });
+    await this.props.requestUser(
+      this.state.sei,
+      this.state.mei,
+    );
   };
 
   render() {

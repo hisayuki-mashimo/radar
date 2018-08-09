@@ -20,22 +20,10 @@ export const fetchParameters = async (sei: string, mei: string, parameterType: n
 export const requestUser = (sei: string, mei: string): ThunkAction<Promise<void>, {}, {}> => (
   async (dispatch, getState) => {
     const parameterType = 1;//getState().parameterType;
-    const parameters = await fetchParameters(sei, mei, parameterType);
+    const response = await fetchParameters(sei, mei, parameterType);
+    const parameters = await response.json();
 
-    dispatch(setUser({ sei: sei, mei: mei }));
+    dispatch(setUser({ sei, mei }));
     dispatch(setParameters(parameters));
   }
 );
-
-/*
-export const fetchCommunities = (): ThunkAction<Promise<void>, {}, {}> =>
-  async (dispatch) => {
-    const { data: { communities } } = await (
-      await PortalApi.community.listCommunities()
-    ).json();
-
-    dispatch(setCommunities(
-      (communities as any[]).map((community) => new Community(community)),
-    ));
-  };
-  */
