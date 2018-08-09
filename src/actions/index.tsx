@@ -14,7 +14,25 @@ export const setParameters = (parameters: Array<number>): Action => ({
 export const fetchParameters = async (sei: string, mei: string, parameterType: number) => {
   const apiUrl = "http://localhost:3000";
 
-  return await fetch(`${apiUrl}/api/parameter/${parameterType}`, { last_name: sei, first_name: mei });
+  console.log(JSON.stringify({ parameter_type: parameterType, last_name: sei, first_name: mei }));
+  return await fetch(
+    //`${apiUrl}/api/parameter/${parameterType}`,
+    `${apiUrl}/api/parameter`,
+    {
+      mode: "cors",
+      method: "POST",
+      //method: "GET",
+      headers: {
+        //"Content-Type": "application/json",
+        //"X-Requested-With": "XMLHttpRequest",
+        "content-type": 'application/json',
+        //"x-requested-with": "XMLHttpRequest",
+      },
+      //body: JSON.stringify({ last_name: sei, first_name: mei }),
+      body: JSON.stringify({ parameter_type: parameterType, last_name: sei, first_name: mei }),
+      credentials: "include",
+    },
+  );
 };
 
 export const requestUser = (sei: string, mei: string): ThunkAction<Promise<void>, {}, {}> => (
