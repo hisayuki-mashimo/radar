@@ -60,18 +60,18 @@ export default class PolyhedronRadarBasisTheta {
     summons(embody_key, params?: {}): Object | void {
         try {
             // 実体化
-            var embody = {
+            const embody = {
                 basis: this,
                 object_basis: this.operator_basis.summons(embody_key, this.property.canvas_context, params)
             };
 
             // プロパティ定義
-            for (var i in this.property) {
+            for (let i in this.property) {
                 if (embody[i] === undefined) {
                     embody[i] = this.property[i];
                 }
             }
-            for (var i in params) {
+            for (let i in params) {
                 if (embody[i] !== undefined) {
                     embody[i] = params[i];
                 }
@@ -91,7 +91,7 @@ export default class PolyhedronRadarBasisTheta {
             embody.parameter_text_params = {};
 
             // 共通メソッド定義
-            var ref = this;
+            const ref = this;
             if (embody.configureParam === undefined) {
                 embody.configureParam = function (parameters) {
                     ref.configureParam(this, parameters);
@@ -113,11 +113,11 @@ export default class PolyhedronRadarBasisTheta {
 
             // 初期化
             this.configure(embody);
+
+            return embody;
         } catch (e) {
             alert(e);
         }
-
-        return embody;
     }
 
     /**
@@ -128,7 +128,7 @@ export default class PolyhedronRadarBasisTheta {
     configure(embody): void {
         embody.object_basis.configure();
 
-        for (var i in embody.object_basis.reles) {
+        for (let i in embody.object_basis.reles) {
             embody.parameter_relations.push(i);
 
             embody.shaft_surfaces[i] = ['O', i];
@@ -150,11 +150,11 @@ export default class PolyhedronRadarBasisTheta {
             throw 'Invalid parameter length(request: ' + embody.parameter_texts.length + ', capacity: ' + embody.parameter_relations.length + ').';
         }
 
-        for (var i in embody.object_basis.surfaces) {
-            embody.param_surfaces[i] = new Array();
+        for (let j in embody.object_basis.surfaces) {
+            embody.param_surfaces[j] = new Array();
 
-            embody.object_basis.surfaces[i].forEach((surface) => {
-                embody.param_surfaces[i].push(`${surface}_param`);
+            embody.object_basis.surfaces[j].forEach((surface) => {
+                embody.param_surfaces[j].push(`${surface}_param`);
             });
         }
 
@@ -162,27 +162,27 @@ export default class PolyhedronRadarBasisTheta {
             this.configureParam(embody, embody.parameters);
         }
 
-        var reles_progress = {};
+        const reles_progress = {};
 
-        for (var i in embody.object_basis.reles) {
-            for (var j = 1; j <= 3; j++) {
-                reles_progress[i + '_' + j] = {
-                    R: embody.object_basis.reles[i].R * (1 / 4 * j),
-                    X: embody.object_basis.reles[i].X,
-                    Y: embody.object_basis.reles[i].Y
+        for (let k in embody.object_basis.reles) {
+            for (let l = 1; l <= 3; l++) {
+                reles_progress[`${k}_${l}`] = {
+                    R: embody.object_basis.reles[k].R * (1 / 4 * l),
+                    X: embody.object_basis.reles[k].X,
+                    Y: embody.object_basis.reles[k].Y
                 };
             }
         }
-        for (var i in reles_progress) {
-            embody.object_basis.reles[i] = reles_progress[i];
+        for (let m in reles_progress) {
+            embody.object_basis.reles[m] = reles_progress[m];
         }
 
-        for (var i in embody.object_basis.surfaces) {
-            for (var j = 1; j <= 3; j++) {
-                embody.meter_surfaces[`${i}_${j}`] = new Array();
+        for (let n in embody.object_basis.surfaces) {
+            for (let o = 1; o <= 3; o++) {
+                embody.meter_surfaces[`${n}_${o}`] = new Array();
 
-                embody.object_basis.surfaces[i].forEach((surface) => {
-                    embody.meter_surfaces[`${i}_${j}`].push(`${surface}_${j}`);
+                embody.object_basis.surfaces[n].forEach((surface) => {
+                    embody.meter_surfaces[`${n}_${o}`].push(`${surface}_${o}`);
                 });
             }
         }
@@ -201,11 +201,11 @@ export default class PolyhedronRadarBasisTheta {
             throw 'Invalid parameter length(request: ' + parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
         }
 
-        for (var i = 0; i < embody.parameter_relations.length; i++) {
-            var rel_code = embody.parameter_relations[i];
-            var rel_param = embody.object_basis.reles[rel_code];
+        for (let i = 0; i < embody.parameter_relations.length; i++) {
+            const rel_code = embody.parameter_relations[i];
+            const rel_param = embody.object_basis.reles[rel_code];
 
-            var parameter_length = (parameters[i] / 100) * rel_param.R;
+            const parameter_length = (parameters[i] / 100) * rel_param.R;
 
             embody.object_basis.reles[rel_code + '_param'] = {
                 'R': parameter_length,
@@ -213,8 +213,8 @@ export default class PolyhedronRadarBasisTheta {
                 'Y': rel_param.Y
             };
 
-            var text_value = embody.parameter_texts[i] + ': ' + parameters[i];
-            var text_param = embody.object_basis.canvas_context.measureText(text_value);
+            const text_value = embody.parameter_texts[i] + ': ' + parameters[i];
+            const text_param = embody.object_basis.canvas_context.measureText(text_value);
 
             embody.parameter_text_params[rel_code] = {
                 text_value: text_value,
@@ -247,44 +247,45 @@ export default class PolyhedronRadarBasisTheta {
 
         const axis_theta = (vector_theta - (Math.PI / 2));
 
-        for (var part_type in surface_group) {
-            var surfaces = surface_group[part_type];
-            var reles = embody.object_basis.reles;
+        for (let part_type in surface_group) {
+            const surfaces = surface_group[part_type];
+            const reles = embody.object_basis.reles;
 
-            for (var surface_code in surfaces) {
-                var surface = surfaces[surface_code];
-                var z_index = 0;
+            for (let surface_code in surfaces) {
+                const surface = surfaces[surface_code];
+                let z_index = 0;
 
                 surface.forEach((pos_code) => {
-                    var pos_key = part_type + '_' + pos_code;
+                    const pos_key = part_type + '_' + pos_code;
 
-                    if (pos_code === 'O') {
-                        var X = 0;
-                        var Y = 0;
-                        var Z = 0;
-                    } else {
-                        var LS0 = getLengthesByTheta('Z', reles[pos_code].X);
-                        var RY0 = LS0.Y;
-                        var LZ0 = LS0.X;
-                        var TY1 = reles[pos_code].Y + rotate_theta - axis_theta;
-                        var LS1 = getLengthesByTheta('Y', TY1);
-                        var LX1 = LS1.X * RY0;
-                        var LY1 = LS1.Y * RY0;
-                        var TX1 = getThetaByLengthes('X', LX1, LZ0);
-                        var RX1 = getLengthByPytha(null, LX1, LZ0);
-                        var TX2 = TX1 + length_theta;
-                        var LS2 = getLengthesByTheta('X', TX2);
-                        var LX2 = LS2.X * RX1;
-                        var LZ2 = LS2.Y * RX1;
-                        var RY2 = getLengthByPytha(null, LX2, LY1);
-                        var TY2 = getThetaByLengthes('Y', LX2, LY1);
-                        var TY3 = TY2 + axis_theta;
-                        var LS3 = getLengthesByTheta('Y', TY3);
-                        var LX3 = LS3.X * RY2;
-                        var LY3 = LS3.Y * RY2;
-                        var X = LX3 * reles[pos_code].R;
-                        var Y = LY3 * reles[pos_code].R;
-                        var Z = LZ2 * reles[pos_code].R;
+                    let X = 0;
+                    let Y = 0;
+                    let Z = 0;
+
+                    if (pos_code !== 'O') {
+                        const LS0 = getLengthesByTheta('Z', reles[pos_code].X);
+                        const RY0 = LS0.Y;
+                        const LZ0 = LS0.X;
+                        const TY1 = reles[pos_code].Y + rotate_theta - axis_theta;
+                        const LS1 = getLengthesByTheta('Y', TY1);
+                        const LX1 = LS1.X * RY0;
+                        const LY1 = LS1.Y * RY0;
+                        const TX1 = getThetaByLengthes('X', LX1, LZ0);
+                        const RX1 = getLengthByPytha(null, LX1, LZ0);
+                        const TX2 = TX1 + length_theta;
+                        const LS2 = getLengthesByTheta('X', TX2);
+                        const LX2 = LS2.X * RX1;
+                        const LZ2 = LS2.Y * RX1;
+                        const RY2 = getLengthByPytha(null, LX2, LY1);
+                        const TY2 = getThetaByLengthes('Y', LX2, LY1);
+                        const TY3 = TY2 + axis_theta;
+                        const LS3 = getLengthesByTheta('Y', TY3);
+                        const LX3 = LS3.X * RY2;
+                        const LY3 = LS3.Y * RY2;
+
+                        X = LX3 * reles[pos_code].R;
+                        Y = LY3 * reles[pos_code].R;
+                        Z = LZ2 * reles[pos_code].R;
                     }
 
                     embody.object_basis.moment_poses[pos_key] = { X: X, Y: Y, Z: Z };
@@ -300,8 +301,8 @@ export default class PolyhedronRadarBasisTheta {
             }
         }
 
-        for (var rel_code in embody.parameter_text_params) {
-            var parameter_rel = embody.object_basis.moment_poses['basis_' + rel_code];
+        for (let rel_code in embody.parameter_text_params) {
+            const parameter_rel = embody.object_basis.moment_poses['basis_' + rel_code];
 
             embody.object_basis.moment_surfaces.push({
                 part_type: 'text',
@@ -322,7 +323,7 @@ export default class PolyhedronRadarBasisTheta {
         embody.object_basis.canvas_context.setTransform(1, 0, 0, 1, 0, 0);
         embody.object_basis.canvas_context.clearRect(0, 0, embody.object_basis.size, embody.object_basis.size);
 
-        var surface_group = {
+        const surface_group = {
             basis: embody.object_basis.surfaces,
             shaft: embody.shaft_surfaces,
             meter: embody.meter_surfaces,
@@ -331,11 +332,11 @@ export default class PolyhedronRadarBasisTheta {
 
         embody.object_basis.moment_surfaces.forEach((moment_surface) => {
             if (moment_surface.part_type === 'text') {
-                var parameter_text_param = embody.parameter_text_params[moment_surface.code];
-                var parameter_rel = embody.object_basis.moment_poses['basis_' + moment_surface.code];
+                const parameter_text_param = embody.parameter_text_params[moment_surface.code];
+                const parameter_rel = embody.object_basis.moment_poses['basis_' + moment_surface.code];
 
-                var pos_X = parseFloat(parameter_rel.X + embody.object_basis._center + 5);
-                var pos_Y = parseFloat(parameter_rel.Y + embody.object_basis._center - 5);
+                const pos_X = parseFloat(parameter_rel.X + embody.object_basis._center + 5);
+                const pos_Y = parseFloat(parameter_rel.Y + embody.object_basis._center - 5);
 
                 embody.object_basis.canvas_context.fillStyle = embody.text_fill_style;
                 embody.object_basis.canvas_context.fillRect(pos_X - 5, pos_Y - 10, parameter_text_param.text_width + 10, 12);
@@ -345,12 +346,12 @@ export default class PolyhedronRadarBasisTheta {
                 return;
             }
 
-            var target_surface = surface_group[moment_surface.part_type][moment_surface.code];
+            const target_surface = surface_group[moment_surface.part_type][moment_surface.code];
 
             embody.object_basis.canvas_context.beginPath();
 
             target_surface.forEach((pos_code, j) => {
-                var pos = embody.object_basis.moment_poses[`${moment_surface.part_type}_${pos_code}`];
+                const pos = embody.object_basis.moment_poses[`${moment_surface.part_type}_${pos_code}`];
 
                 if (j == 0) {
                     embody.object_basis.canvas_context.moveTo(embody.object_basis._center + pos.X, embody.object_basis._center + pos.Y);
