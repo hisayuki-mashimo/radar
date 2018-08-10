@@ -8,12 +8,12 @@ class OctahedronTheta {
      *
      */
     configure() {
-        //var getLengthByPytha = this.basis.geometry_calculator.getLengthByPytha;
-
-        var pai = Math.PI;
+        /*
+        const { getLengthByPytha } = this.basis.geometry_calculator;
+        */
 
         // 正三角形比率
-        var RA_A00 = {
+        const RA_A00 = {
             A: 1,
             B: Math.pow(3, 1 / 2),
             C: 2
@@ -30,30 +30,30 @@ class OctahedronTheta {
 
         var TX_A00 = Math.asin(LX_A00 / LX_A04);
         */
-        var LX_A00 = this.alpha * (RA_A00.A / RA_A00.B);
+        const LX_A00 = this.alpha * (RA_A00.A / RA_A00.B);
 
-        var LT_A00 = this.alpha;
-        var TX_A00 = Math.acos(LX_A00 / LT_A00);
+        const LT_A00 = this.alpha;
+        const TX_A00 = Math.acos(LX_A00 / LT_A00);
 
-        var TY_A00 = 0;
+        const TY_A00 = 0;
 
-        var reles_base = {
+        const reles_base = {
             A0: { R: LT_A00, X: TX_A00, Y: TY_A00 }
         };
 
-        for (var i in reles_base) {
-            var base_R = reles_base[i].R;
-            var base_X = reles_base[i].X;
-            var base_Y = reles_base[i].Y;
+        for (let i in reles_base) {
+            const base_R = reles_base[i].R;
+            const base_X = reles_base[i].X;
+            const base_Y = reles_base[i].Y;
 
-            for (var n = 0; n < 3; n++) {
+            for (let n = 0; n < 3; n++) {
                 this.reles[i + n + 'AO'] = { R: base_R };
                 this.reles[i + n + 'SR'] = { R: base_R };
 
                 this.reles[i + n + 'AO'].X = base_X;
-                this.reles[i + n + 'AO'].Y = base_Y + ((pai * 2 / 3) * n);
-                this.reles[i + n + 'SR'].X = base_X + pai;
-                this.reles[i + n + 'SR'].Y = (base_Y + ((pai * 2 / 3) * n)) * -1;
+                this.reles[i + n + 'AO'].Y = base_Y + ((Math.PI * 2 / 3) * n);
+                this.reles[i + n + 'SR'].X = base_X + Math.PI;
+                this.reles[i + n + 'SR'].Y = (base_Y + ((Math.PI * 2 / 3) * n)) * -1;
             }
         }
 

@@ -8,10 +8,10 @@ class DodecahedronTheta {
      *
      */
     configure() {
-        var finalizeRatioByPytha = this.basis.geometry_calculator.finalizeRatioByPytha;
+        const { finalizeRatioByPytha } = this.basis.geometry_calculator;
 
         // 五芒星比率
-        var RA_A01 = {
+        const RA_A01 = {
             A: (4 * Math.pow(Math.cos(Math.PI * 2 / 10), 2)) - 2,
             B: 1,
             C: (4 * Math.pow(Math.cos(Math.PI * 2 / 10), 2)) - 1,
@@ -19,53 +19,53 @@ class DodecahedronTheta {
         };
 
         /*
-        var LX_A00 = this.alpha;
-        var LX_A01 = LX_A00 * (RA_A01.A / RA_A01.C);
-        var LX_A02 = LX_A00 + LX_A01;
-        var LX_A03 = LX_A02 / 2;
-        var LX_A04 = LX_A03 * (RA_A01.B / RA_A01.C);
-        var LX_A05 = LX_A01 + LX_A04;
-        var LX_A06 = this.basis.geometry_calculator.getLengthByPytha(LX_A00, LX_A05, null);
-        var LX_A07 = LX_A06 * (RA_A01.C / RA_A01.B);
-        var LX_A08 = LX_A07 * (RA_A01.D / RA_A01.C);
-        var LX_A09 = this.basis.geometry_calculator.getLengthByPytha(LX_A08, LX_A05, null);
-        var LX_A10 = this.basis.geometry_calculator.getLengthByPytha(null, LX_A00, LX_A09);
+        const LX_A00 = this.alpha;
+        const LX_A01 = LX_A00 * (RA_A01.A / RA_A01.C);
+        const LX_A02 = LX_A00 + LX_A01;
+        const LX_A03 = LX_A02 / 2;
+        const LX_A04 = LX_A03 * (RA_A01.B / RA_A01.C);
+        const LX_A05 = LX_A01 + LX_A04;
+        const LX_A06 = this.basis.geometry_calculator.getLengthByPytha(LX_A00, LX_A05, null);
+        const LX_A07 = LX_A06 * (RA_A01.C / RA_A01.B);
+        const LX_A08 = LX_A07 * (RA_A01.D / RA_A01.C);
+        const LX_A09 = this.basis.geometry_calculator.getLengthByPytha(LX_A08, LX_A05, null);
+        const LX_A10 = this.basis.geometry_calculator.getLengthByPytha(null, LX_A00, LX_A09);
 
-        var LT_A00 = LX_A10;
+        const LT_A00 = LX_A10;
 
-        var TX_A00 = Math.asin(LX_A00 / LX_A10);
-        var TX_B00 = Math.asin(LX_A00 / LX_A10) + (Math.asin(LX_A06 / LX_A10) * 2);
+        const TX_A00 = Math.asin(LX_A00 / LX_A10);
+        const TX_B00 = Math.asin(LX_A00 / LX_A10) + (Math.asin(LX_A06 / LX_A10) * 2);
         */
-        var LX_A00 = 1;
-        var LX_A01 = LX_A00 * (RA_A01.D / RA_A01.C);
-        var LX_A02 = LX_A01 - LX_A00;
-        var LX_A03 = LX_A02 * (RA_A01.D / RA_A01.C);
-        var RX_A00 = finalizeRatioByPytha({
+        const LX_A00 = 1;
+        const LX_A01 = LX_A00 * (RA_A01.D / RA_A01.C);
+        const LX_A02 = LX_A01 - LX_A00;
+        const LX_A03 = LX_A02 * (RA_A01.D / RA_A01.C);
+        const RX_A00 = finalizeRatioByPytha({
             A: null,
             B: LX_A00,
             C: LX_A01 + LX_A03
         });
-        var LX_A04 = this.alpha * (RX_A00.B / RX_A00.A);
-        var LX_A05 = LX_A04 / Math.sin(Math.PI / 5);
+        const LX_A04 = this.alpha * (RX_A00.B / RX_A00.A);
+        const LX_A05 = LX_A04 / Math.sin(Math.PI / 5);
 
-        var LT_A00 = this.alpha;
-        var TX_A00 = Math.asin(LX_A05 / this.alpha);
-        var TX_B00 = TX_A00 + (Math.asin(LX_A04 / this.alpha) * 2);
-        var TY_A00 = 0;
+        const LT_A00 = this.alpha;
+        const TX_A00 = Math.asin(LX_A05 / this.alpha);
+        const TX_B00 = TX_A00 + (Math.asin(LX_A04 / this.alpha) * 2);
+        const TY_A00 = 0;
 
-        var reles_base = {
-            A0: {R: LT_A00, X: TX_A00, Y: TY_A00},
-            B0: {R: LT_A00, X: TX_B00, Y: TY_A00}
+        const reles_base = {
+            A0: { R: LT_A00, X: TX_A00, Y: TY_A00 },
+            B0: { R: LT_A00, X: TX_B00, Y: TY_A00 }
         };
 
-        for (var i in reles_base) {
-            var base_R = reles_base[i].R;
-            var base_X = reles_base[i].X;
-            var base_Y = reles_base[i].Y;
+        for (let i in reles_base) {
+            const base_R = reles_base[i].R;
+            const base_X = reles_base[i].X;
+            const base_Y = reles_base[i].Y;
 
-            for (var n = 0; n < 5; n ++) {
-                this.reles[i + n + 'AO'] = {R: base_R};
-                this.reles[i + n + 'SR'] = {R: base_R};
+            for (let n = 0; n < 5; n++) {
+                this.reles[i + n + 'AO'] = { R: base_R };
+                this.reles[i + n + 'SR'] = { R: base_R };
 
                 this.reles[i + n + 'AO'].X = base_X;
                 this.reles[i + n + 'AO'].Y = base_Y + ((Math.PI * 2 / 5) * n);
