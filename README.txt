@@ -35,6 +35,10 @@ vi webpack.config.js
 yarn add babel-runtime
 yarn add babel-plugin-transform-runtime
 yarn add redux-thunk
+yarn add tslint-loader
+yarn add tslint-config-airbnb
+yarn add --dev eslint babel-eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb
+tslint-react
 
 yarn run build --mode=development
 yarn webpack-dev-server --mode=development

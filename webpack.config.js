@@ -16,7 +16,11 @@ module.exports = {
       {
         test: /\.(j|t)s(x?)$/,
         exclude: /node_modules/,
-        use: 'babel-loader'
+        use: [
+          'babel-loader',
+          //'awesome-typescript-loader',
+          'tslint-loader',
+        ],
       },
       {
         enforce: "pre",
