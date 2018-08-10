@@ -93,8 +93,8 @@ export default class PolyhedronBasisTheta {
             if (embody.configure === undefined) {
                 throw 'Undefined method(configure()).';
             }
-            embody.setDirection = (rotate_theta, vector_theta, length_theta) => {
-                ref.setDirection(this, rotate_theta, vector_theta, length_theta);
+            embody.setDirection = (rotateTheta: number, vectorTheta: number, lengthTheta: number) => {
+                ref.setDirection(this, rotateTheta, vectorTheta, lengthTheta);
             };
             embody.output = () => {
                 ref.output(this);
@@ -113,54 +113,52 @@ export default class PolyhedronBasisTheta {
      * 方向転換
      *
      * @param   object  embody
-     * @param   float   rotate_theta
-     * @param   float   vector_theta
-     * @param   float   length_theta
+     * @param   float   rotateTheta
+     * @param   float   vectorTheta
+     * @param   float   lengthTheta
      */
-    setDirection(embody, rotate_theta, vector_theta, length_theta): void {
+    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number): void {
         embody.moment_surfaces = new Array();
 
-        const axis_theta = (vector_theta - (Math.PI / 2));
+        const axisTheta = (vectorTheta - (Math.PI / 2));
 
         for (let i in embody.surfaces) {
             const poses = new Array();
-            let z_index = 0;
+            let zIndex = 0;
 
-            for (let j = 0; j < embody.surfaces[i].length; j++) {
-                const pos_code = embody.surfaces[i][j];
-
-                const LS0 = GeometryCalculator.getLengthesByTheta('Z', embody.reles[pos_code].X);
+            embody.surfaces[i].forEach((posCode) => {
+                const LS0 = GeometryCalculator.getLengthesByTheta('Z', embody.reles[posCode].X);
                 const RY0 = LS0.Y;
                 const LZ0 = LS0.X;
 
-                const TY1 = embody.reles[pos_code].Y + rotate_theta - axis_theta;
+                const TY1 = embody.reles[posCode].Y + rotateTheta - axisTheta;
                 const LS1 = GeometryCalculator.getLengthesByTheta('Y', TY1);
                 const LX1 = LS1.X * RY0 * -1;
                 const LY1 = LS1.Y * RY0 * -1;
                 const TX1 = GeometryCalculator.getThetaByLengthes('X', LX1, LZ0);
                 const RX1 = GeometryCalculator.getLengthByPytha(null, LX1, LZ0);
-                const TX2 = TX1 + length_theta;
+                const TX2 = TX1 + lengthTheta;
                 const LS2 = GeometryCalculator.getLengthesByTheta('X', TX2);
                 const LX2 = LS2.X * RX1;
                 const LZ2 = LS2.Y * RX1;
                 const RY2 = GeometryCalculator.getLengthByPytha(null, LX2, LY1);
                 const TY2 = GeometryCalculator.getThetaByLengthes('Y', LX2, LY1);
 
-                const TY3 = TY2 + axis_theta;
+                const TY3 = TY2 + axisTheta;
                 const LS3 = GeometryCalculator.getLengthesByTheta('Y', TY3);
                 const LX3 = LS3.X * RY2;
                 const LY3 = LS3.Y * RY2;
-                const X = LX3 * embody.reles[pos_code].R;
-                const Y = LY3 * embody.reles[pos_code].R;
-                const Z = LZ2 * embody.reles[pos_code].R;
+                const X = LX3 * embody.reles[posCode].R;
+                const Y = LY3 * embody.reles[posCode].R;
+                const Z = LZ2 * embody.reles[posCode].R;
 
-                embody.moment_poses[pos_code] = { X: X, Y: Y, Z: Z };
+                embody.moment_poses[posCode] = { X: X, Y: Y, Z: Z };
 
-                z_index += Z;
-            }
+                zIndex += Z;
+            });
 
-            z_index = z_index / embody.surfaces[i].length;
-            embody.moment_surfaces.push({ code: i, z_index: z_index });
+            zIndex = zIndex / embody.surfaces[i].length;
+            embody.moment_surfaces.push({ code: i, z_index: zIndex });
         }
 
         embody.moment_surfaces.sort(function (A, B) { return A.z_index - B.z_index; });
@@ -175,25 +173,25 @@ export default class PolyhedronBasisTheta {
         embody.canvas_context.setTransform(1, 0, 0, 1, 0, 0);
         embody.canvas_context.clearRect(0, 0, embody.size, embody.size);
 
-        for (let i = 0; i < embody.moment_surfaces.length; i++) {
+        embody.moment_surfaces.forEach((momentSurface) => {
             embody.canvas_context.beginPath();
 
-            const surface = embody.surfaces[embody.moment_surfaces[i].code];
+            const surface = embody.surfaces[momentSurface.code];
 
-            for (let j = 0; j < surface.length; j++) {
-                const pos = embody.moment_poses[surface[j]];
-                if (j == 0) {
+            surface.forEach((posCode, i: number) => {
+                const pos = embody.moment_poses[posCode];
+                if (i == 0) {
                     embody.canvas_context.moveTo(embody._center + pos.X, embody._center + pos.Y);
                 } else {
                     embody.canvas_context.lineTo(embody._center + pos.X, embody._center + pos.Y);
                 }
-            }
+            });
 
             embody.canvas_context.closePath();
             embody.canvas_context.fillStyle = embody.fill_style;
             embody.canvas_context.fill();
             embody.canvas_context.strokeStyle = embody.stroke_style;
             embody.canvas_context.stroke();
-        }
+        });
     }
 }
