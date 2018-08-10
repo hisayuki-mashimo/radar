@@ -144,10 +144,10 @@ export default class PolyhedronRadarBasisTheta {
             });
         }
         if (embody.parameter_relations.length !== embody.parameters.length) {
-            throw 'Invalid parameter length(request: ' + embody.parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
+            throw `Invalid parameter length(request: ${embody.parameters.length}, capacity: ${embody.parameter_relations.length}).`;
         }
         if (embody.parameter_relations.length !== embody.parameter_texts.length) {
-            throw 'Invalid parameter length(request: ' + embody.parameter_texts.length + ', capacity: ' + embody.parameter_relations.length + ').';
+            throw `Invalid parameter length(request: ${embody.parameter_texts.length}, capacity: ${embody.parameter_relations.length}).`;
         }
 
         for (let j in embody.object_basis.surfaces) {
@@ -162,19 +162,19 @@ export default class PolyhedronRadarBasisTheta {
             this.configureParam(embody, embody.parameters);
         }
 
-        const reles_progress = {};
+        const relesProgress = {};
 
         for (let k in embody.object_basis.reles) {
             for (let l = 1; l <= 3; l++) {
-                reles_progress[`${k}_${l}`] = {
+                relesProgress[`${k}_${l}`] = {
                     R: embody.object_basis.reles[k].R * (1 / 4 * l),
                     X: embody.object_basis.reles[k].X,
                     Y: embody.object_basis.reles[k].Y
                 };
             }
         }
-        for (let m in reles_progress) {
-            embody.object_basis.reles[m] = reles_progress[m];
+        for (let m in relesProgress) {
+            embody.object_basis.reles[m] = relesProgress[m];
         }
 
         for (let n in embody.object_basis.surfaces) {
@@ -198,116 +198,114 @@ export default class PolyhedronRadarBasisTheta {
      */
     configureParam(embody, parameters): void {
         if (parameters.length !== embody.parameter_relations.length) {
-            throw 'Invalid parameter length(request: ' + parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
+            throw `Invalid parameter length(request: ${parameters.length}, capacity: ${embody.parameter_relations.length}).`;
         }
 
-        for (let i = 0; i < embody.parameter_relations.length; i++) {
-            const rel_code = embody.parameter_relations[i];
-            const rel_param = embody.object_basis.reles[rel_code];
+        embody.parameter_relations.forEach((relCode, i) => {
+            const relParam = embody.object_basis.reles[relCode];
+            const parameterLength = (parameters[i] / 100) * relParam.R;
 
-            const parameter_length = (parameters[i] / 100) * rel_param.R;
-
-            embody.object_basis.reles[rel_code + '_param'] = {
-                'R': parameter_length,
-                'X': rel_param.X,
-                'Y': rel_param.Y
+            embody.object_basis.reles[`${relCode}_param`] = {
+                R: parameterLength,
+                X: relParam.X,
+                Y: relParam.Y
             };
 
-            const text_value = embody.parameter_texts[i] + ': ' + parameters[i];
-            const text_param = embody.object_basis.canvas_context.measureText(text_value);
+            const textValue = `${embody.parameter_texts[i]}: ${parameters[i]}`;
+            const textParam = embody.object_basis.canvas_context.measureText(textValue);
 
-            embody.parameter_text_params[rel_code] = {
-                text_value: text_value,
-                text_width: text_param.width
+            embody.parameter_text_params[relCode] = {
+                text_value: textValue,
+                text_width: textParam.width
             };
-        }
+        });
     }
 
     /**
      * 方向転換
      *
      * @param   object  embody
-     * @param   float   rotate_theta
-     * @param   float   vector_theta
-     * @param   float   length_theta
+     * @param   number  rotateTheta
+     * @param   number  vectorTheta
+     * @param   number  lengthTheta
      */
-    setDirection(embody, rotate_theta, vector_theta, length_theta): void {
-        const getLengthByPytha = this.operator_basis.geometry_calculator.getLengthByPytha;
-        const getLengthesByTheta = this.operator_basis.geometry_calculator.getLengthesByTheta;
-        const getThetaByLengthes = this.operator_basis.geometry_calculator.getThetaByLengthes;
+    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number): void {
+        const {
+            getLengthByPytha,
+            getLengthesByTheta,
+            getThetaByLengthes,
+        } = this.operator_basis.geometry_calculator;
 
-        embody.object_basis.moment_surfaces = new Array();
+        embody.object_basis.moment_surfaces = [];
 
-        const surface_group = {
+        const surfaceGroup = {
             basis: embody.object_basis.surfaces,
             shaft: embody.shaft_surfaces,
             meter: embody.meter_surfaces,
             param: embody.param_surfaces
         };
 
-        const axis_theta = (vector_theta - (Math.PI / 2));
+        const axisTheta = (vectorTheta - (Math.PI / 2));
 
-        for (let part_type in surface_group) {
-            const surfaces = surface_group[part_type];
+        for (let partType in surfaceGroup) {
+            const surfaces = surfaceGroup[partType];
             const reles = embody.object_basis.reles;
 
-            for (let surface_code in surfaces) {
-                const surface = surfaces[surface_code];
-                let z_index = 0;
+            for (let surfaceCode in surfaces) {
+                const surface = surfaces[surfaceCode];
+                let zIndex = 0;
 
-                surface.forEach((pos_code) => {
-                    const pos_key = part_type + '_' + pos_code;
-
+                surface.forEach((posCode) => {
                     let X = 0;
                     let Y = 0;
                     let Z = 0;
 
-                    if (pos_code !== 'O') {
-                        const LS0 = getLengthesByTheta('Z', reles[pos_code].X);
+                    if (posCode !== 'O') {
+                        const LS0 = getLengthesByTheta('Z', reles[posCode].X);
                         const RY0 = LS0.Y;
                         const LZ0 = LS0.X;
-                        const TY1 = reles[pos_code].Y + rotate_theta - axis_theta;
+                        const TY1 = reles[posCode].Y + rotateTheta - axisTheta;
                         const LS1 = getLengthesByTheta('Y', TY1);
                         const LX1 = LS1.X * RY0;
                         const LY1 = LS1.Y * RY0;
                         const TX1 = getThetaByLengthes('X', LX1, LZ0);
                         const RX1 = getLengthByPytha(null, LX1, LZ0);
-                        const TX2 = TX1 + length_theta;
+                        const TX2 = TX1 + lengthTheta;
                         const LS2 = getLengthesByTheta('X', TX2);
                         const LX2 = LS2.X * RX1;
                         const LZ2 = LS2.Y * RX1;
                         const RY2 = getLengthByPytha(null, LX2, LY1);
                         const TY2 = getThetaByLengthes('Y', LX2, LY1);
-                        const TY3 = TY2 + axis_theta;
+                        const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta('Y', TY3);
                         const LX3 = LS3.X * RY2;
                         const LY3 = LS3.Y * RY2;
 
-                        X = LX3 * reles[pos_code].R;
-                        Y = LY3 * reles[pos_code].R;
-                        Z = LZ2 * reles[pos_code].R;
+                        X = LX3 * reles[posCode].R;
+                        Y = LY3 * reles[posCode].R;
+                        Z = LZ2 * reles[posCode].R;
                     }
 
-                    embody.object_basis.moment_poses[pos_key] = { X: X, Y: Y, Z: Z };
+                    embody.object_basis.moment_poses[`${partType}_${posCode}`] = { X: X, Y: Y, Z: Z };
 
-                    z_index += Z;
+                    zIndex += Z;
                 });
 
                 embody.object_basis.moment_surfaces.push({
-                    part_type: part_type,
-                    code: surface_code,
-                    z_index: (z_index / surface.length)
+                    part_type: partType,
+                    code: surfaceCode,
+                    z_index: (zIndex / surface.length)
                 });
             }
         }
 
-        for (let rel_code in embody.parameter_text_params) {
-            const parameter_rel = embody.object_basis.moment_poses['basis_' + rel_code];
+        for (let relCode in embody.parameter_text_params) {
+            const parameterRel = embody.object_basis.moment_poses[`basis_${relCode}`];
 
             embody.object_basis.moment_surfaces.push({
                 part_type: 'text',
-                code: rel_code,
-                z_index: parameter_rel.Z
+                code: relCode,
+                z_index: parameterRel.Z
             });
         }
 
@@ -319,39 +317,39 @@ export default class PolyhedronRadarBasisTheta {
      *
      * @param   object  embody
      */
-    output(embody, theta_X, theta_Y, theta_Z): void {
+    output(embody): void {
         embody.object_basis.canvas_context.setTransform(1, 0, 0, 1, 0, 0);
         embody.object_basis.canvas_context.clearRect(0, 0, embody.object_basis.size, embody.object_basis.size);
 
-        const surface_group = {
+        const surfaceGroup = {
             basis: embody.object_basis.surfaces,
             shaft: embody.shaft_surfaces,
             meter: embody.meter_surfaces,
             param: embody.param_surfaces
         };
 
-        embody.object_basis.moment_surfaces.forEach((moment_surface) => {
-            if (moment_surface.part_type === 'text') {
-                const parameter_text_param = embody.parameter_text_params[moment_surface.code];
-                const parameter_rel = embody.object_basis.moment_poses['basis_' + moment_surface.code];
+        embody.object_basis.moment_surfaces.forEach((momentSurface) => {
+            if (momentSurface.part_type === 'text') {
+                const parameter_text_param = embody.parameter_text_params[momentSurface.code];
+                const parameterRel = embody.object_basis.moment_poses[`basis_${momentSurface.code}`];
 
-                const pos_X = parseFloat(parameter_rel.X + embody.object_basis._center + 5);
-                const pos_Y = parseFloat(parameter_rel.Y + embody.object_basis._center - 5);
+                const posX = parseFloat(parameterRel.X + embody.object_basis._center + 5);
+                const posY = parseFloat(parameterRel.Y + embody.object_basis._center - 5);
 
                 embody.object_basis.canvas_context.fillStyle = embody.text_fill_style;
-                embody.object_basis.canvas_context.fillRect(pos_X - 5, pos_Y - 10, parameter_text_param.text_width + 10, 12);
+                embody.object_basis.canvas_context.fillRect(posX - 5, posY - 10, parameter_text_param.text_width + 10, 12);
                 embody.object_basis.canvas_context.fillStyle = embody.text_stroke_style;
-                embody.object_basis.canvas_context.fillText(parameter_text_param.text_value, pos_X, pos_Y);
+                embody.object_basis.canvas_context.fillText(parameter_text_param.text_value, posX, posY);
 
                 return;
             }
 
-            const target_surface = surface_group[moment_surface.part_type][moment_surface.code];
+            const targetSurface = surfaceGroup[momentSurface.part_type][momentSurface.code];
 
             embody.object_basis.canvas_context.beginPath();
 
-            target_surface.forEach((pos_code, j) => {
-                const pos = embody.object_basis.moment_poses[`${moment_surface.part_type}_${pos_code}`];
+            targetSurface.forEach((posCode, j) => {
+                const pos = embody.object_basis.moment_poses[`${momentSurface.part_type}_${posCode}`];
 
                 if (j == 0) {
                     embody.object_basis.canvas_context.moveTo(embody.object_basis._center + pos.X, embody.object_basis._center + pos.Y);
@@ -361,7 +359,7 @@ export default class PolyhedronRadarBasisTheta {
             });
 
             embody.object_basis.canvas_context.closePath();
-            switch (moment_surface.part_type) {
+            switch (momentSurface.part_type) {
                 case 'basis':
                     embody.object_basis.canvas_context.fillStyle = embody.basis_fill_style;
                     embody.object_basis.canvas_context.strokeStyle = embody.basis_stroke_style;
