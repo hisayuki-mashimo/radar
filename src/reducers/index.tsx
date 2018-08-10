@@ -1,6 +1,5 @@
 import { Action, Reducer } from "redux";
 import { Record } from "immutable";
-import CybozuLabs from "models/CybozuLabs";
 
 export interface User {
   sei: string;
