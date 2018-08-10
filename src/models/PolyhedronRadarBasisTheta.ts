@@ -79,7 +79,7 @@ export default class PolyhedronRadarBasisTheta {
 
             // 内部変数の初期化
             if (embody.parameter_texts === null) {
-                throw 'Undefined param(parameter_texts).';
+                throw "Undefined param(parameter_texts).";
             }
             if (embody.parameters === null) {
                 embody.parameters = new Array();
@@ -108,8 +108,8 @@ export default class PolyhedronRadarBasisTheta {
                 };
             }
 
-            embody.object_basis.canvas_context.font = '12px';
-            //embody.object_basis.canvas_context.font = "12px 'osaka,sans-serif'";
+            embody.object_basis.canvas_context.font = "12px";
+            //embody.object_basis.canvas_context.font = "12px "osaka,sans-serif"";
 
             // 初期化
             this.configure(embody);
@@ -131,7 +131,7 @@ export default class PolyhedronRadarBasisTheta {
         for (let i in embody.object_basis.reles) {
             embody.parameter_relations.push(i);
 
-            embody.shaft_surfaces[i] = ['O', i];
+            embody.shaft_surfaces[i] = ["O", i];
 
             if (embody.object_basis.reles[i].R > embody.max_radius) {
                 embody.max_radius = embody.object_basis.reles[i].R;
@@ -187,7 +187,7 @@ export default class PolyhedronRadarBasisTheta {
             }
         }
 
-        embody.object_basis.reles['O'] = { R: 0, X: 0, Y: 0 };
+        embody.object_basis.reles["O"] = { R: 0, X: 0, Y: 0 };
     }
 
     /**
@@ -260,24 +260,24 @@ export default class PolyhedronRadarBasisTheta {
                     let Y = 0;
                     let Z = 0;
 
-                    if (posCode !== 'O') {
-                        const LS0 = getLengthesByTheta('Z', reles[posCode].X);
+                    if (posCode !== "O") {
+                        const LS0 = getLengthesByTheta("Z", reles[posCode].X);
                         const RY0 = LS0.Y;
                         const LZ0 = LS0.X;
                         const TY1 = reles[posCode].Y + rotateTheta - axisTheta;
-                        const LS1 = getLengthesByTheta('Y', TY1);
+                        const LS1 = getLengthesByTheta("Y", TY1);
                         const LX1 = LS1.X * RY0;
                         const LY1 = LS1.Y * RY0;
-                        const TX1 = getThetaByLengthes('X', LX1, LZ0);
+                        const TX1 = getThetaByLengthes("X", LX1, LZ0);
                         const RX1 = getLengthByPytha(null, LX1, LZ0);
                         const TX2 = TX1 + lengthTheta;
-                        const LS2 = getLengthesByTheta('X', TX2);
+                        const LS2 = getLengthesByTheta("X", TX2);
                         const LX2 = LS2.X * RX1;
                         const LZ2 = LS2.Y * RX1;
                         const RY2 = getLengthByPytha(null, LX2, LY1);
-                        const TY2 = getThetaByLengthes('Y', LX2, LY1);
+                        const TY2 = getThetaByLengthes("Y", LX2, LY1);
                         const TY3 = TY2 + axisTheta;
-                        const LS3 = getLengthesByTheta('Y', TY3);
+                        const LS3 = getLengthesByTheta("Y", TY3);
                         const LX3 = LS3.X * RY2;
                         const LY3 = LS3.Y * RY2;
 
@@ -303,7 +303,7 @@ export default class PolyhedronRadarBasisTheta {
             const parameterRel = embody.object_basis.moment_poses[`basis_${relCode}`];
 
             embody.object_basis.moment_surfaces.push({
-                part_type: 'text',
+                part_type: "text",
                 code: relCode,
                 z_index: parameterRel.Z
             });
@@ -329,7 +329,7 @@ export default class PolyhedronRadarBasisTheta {
         };
 
         embody.object_basis.moment_surfaces.forEach((momentSurface) => {
-            if (momentSurface.part_type === 'text') {
+            if (momentSurface.part_type === "text") {
                 const parameter_text_param = embody.parameter_text_params[momentSurface.code];
                 const parameterRel = embody.object_basis.moment_poses[`basis_${momentSurface.code}`];
 
@@ -360,22 +360,22 @@ export default class PolyhedronRadarBasisTheta {
 
             embody.object_basis.canvas_context.closePath();
             switch (momentSurface.part_type) {
-                case 'basis':
+                case "basis":
                     embody.object_basis.canvas_context.fillStyle = embody.basis_fill_style;
                     embody.object_basis.canvas_context.strokeStyle = embody.basis_stroke_style;
                     break;
 
-                case 'shaft':
+                case "shaft":
                     embody.object_basis.canvas_context.fillStyle = embody.shaft_fill_style;
                     embody.object_basis.canvas_context.strokeStyle = embody.shaft_stroke_style;
                     break;
 
-                case 'meter':
+                case "meter":
                     embody.object_basis.canvas_context.fillStyle = embody.meter_fill_style;
                     embody.object_basis.canvas_context.strokeStyle = embody.meter_stroke_style;
                     break;
 
-                case 'param':
+                case "param":
                     embody.object_basis.canvas_context.fillStyle = embody.param_fill_style;
                     embody.object_basis.canvas_context.strokeStyle = embody.param_stroke_style;
                     break;

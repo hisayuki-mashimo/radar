@@ -6,17 +6,19 @@ import * as styles from "./styles.scss";
 
 class Layout extends React.Component {
   render() {
-    return <div className={styles.contentsFrame}>
-      <div className={styles.titleFrame}>
-        <Title />
+    return (
+      <div className={styles.contentsFrame}>
+        <div className={styles.titleFrame}>
+          <Title />
+        </div>
+        <div className={styles.radarFrame}>
+          <RadarViewer />
+        </div>
+        <div className={styles.formFrame}>
+          <Form />
+        </div>
       </div>
-      <div className={styles.radarFrame}>
-        <RadarViewer />
-      </div>
-      <div className={styles.formFrame}>
-        <Form />
-      </div>
-    </div>;
+    );
   }
 }
 
