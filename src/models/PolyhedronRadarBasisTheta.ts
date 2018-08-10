@@ -139,9 +139,9 @@ export default class PolyhedronRadarBasisTheta {
         }
 
         if (embody.parameters.length === 0) {
-            for (var i = 0; i < embody.parameter_relations.length; i++) {
+            embody.parameter_relations.forEach(() => {
                 embody.parameters.push(0);
-            }
+            });
         }
         if (embody.parameter_relations.length !== embody.parameters.length) {
             throw 'Invalid parameter length(request: ' + embody.parameters.length + ', capacity: ' + embody.parameter_relations.length + ').';
@@ -153,9 +153,9 @@ export default class PolyhedronRadarBasisTheta {
         for (var i in embody.object_basis.surfaces) {
             embody.param_surfaces[i] = new Array();
 
-            for (var j = 0; j < embody.object_basis.surfaces[i].length; j++) {
-                embody.param_surfaces[i].push(embody.object_basis.surfaces[i][j] + '_param');
-            }
+            embody.object_basis.surfaces[i].forEach((surface) => {
+                embody.param_surfaces[i].push(`${surface}_param`);
+            });
         }
 
         if (embody.parameters.length !== 0) {
@@ -179,10 +179,11 @@ export default class PolyhedronRadarBasisTheta {
 
         for (var i in embody.object_basis.surfaces) {
             for (var j = 1; j <= 3; j++) {
-                embody.meter_surfaces[i + '_' + j] = new Array();
-                for (var k = 0; k < embody.object_basis.surfaces[i].length; k++) {
-                    embody.meter_surfaces[i + '_' + j].push(embody.object_basis.surfaces[i][k] + '_' + j);
-                }
+                embody.meter_surfaces[`${i}_${j}`] = new Array();
+
+                embody.object_basis.surfaces[i].forEach((surface) => {
+                    embody.meter_surfaces[`${i}_${j}`].push(`${surface}_${j}`);
+                });
             }
         }
 
@@ -254,8 +255,7 @@ export default class PolyhedronRadarBasisTheta {
                 var surface = surfaces[surface_code];
                 var z_index = 0;
 
-                for (var i = 0; i < surface.length; i++) {
-                    var pos_code = surface[i];
+                surface.forEach((pos_code) => {
                     var pos_key = part_type + '_' + pos_code;
 
                     if (pos_code === 'O') {
@@ -290,7 +290,7 @@ export default class PolyhedronRadarBasisTheta {
                     embody.object_basis.moment_poses[pos_key] = { X: X, Y: Y, Z: Z };
 
                     z_index += Z;
-                }
+                });
 
                 embody.object_basis.moment_surfaces.push({
                     part_type: part_type,
@@ -310,7 +310,7 @@ export default class PolyhedronRadarBasisTheta {
             });
         }
 
-        embody.object_basis.moment_surfaces.sort(function (A, B) { return A.z_index - B.z_index; });
+        embody.object_basis.moment_surfaces.sort((A, B) => (A.z_index - B.z_index));
     }
 
     /**
@@ -329,9 +329,7 @@ export default class PolyhedronRadarBasisTheta {
             param: embody.param_surfaces
         };
 
-        for (var i = 0; i < embody.object_basis.moment_surfaces.length; i++) {
-            var moment_surface = embody.object_basis.moment_surfaces[i];
-
+        embody.object_basis.moment_surfaces.forEach((moment_surface) => {
             if (moment_surface.part_type === 'text') {
                 var parameter_text_param = embody.parameter_text_params[moment_surface.code];
                 var parameter_rel = embody.object_basis.moment_poses['basis_' + moment_surface.code];
@@ -341,28 +339,25 @@ export default class PolyhedronRadarBasisTheta {
 
                 embody.object_basis.canvas_context.fillStyle = embody.text_fill_style;
                 embody.object_basis.canvas_context.fillRect(pos_X - 5, pos_Y - 10, parameter_text_param.text_width + 10, 12);
-
                 embody.object_basis.canvas_context.fillStyle = embody.text_stroke_style;
                 embody.object_basis.canvas_context.fillText(parameter_text_param.text_value, pos_X, pos_Y);
 
-                continue;
+                return;
             }
 
             var target_surface = surface_group[moment_surface.part_type][moment_surface.code];
 
             embody.object_basis.canvas_context.beginPath();
 
-            for (var j = 0; j < target_surface.length; j++) {
-                var pos_key = moment_surface.part_type + '_' + target_surface[j];
-
-                var pos = embody.object_basis.moment_poses[pos_key];
+            target_surface.forEach((pos_code, j) => {
+                var pos = embody.object_basis.moment_poses[`${moment_surface.part_type}_${pos_code}`];
 
                 if (j == 0) {
                     embody.object_basis.canvas_context.moveTo(embody.object_basis._center + pos.X, embody.object_basis._center + pos.Y);
                 } else {
                     embody.object_basis.canvas_context.lineTo(embody.object_basis._center + pos.X, embody.object_basis._center + pos.Y);
                 }
-            }
+            });
 
             embody.object_basis.canvas_context.closePath();
             switch (moment_surface.part_type) {
@@ -388,6 +383,6 @@ export default class PolyhedronRadarBasisTheta {
             }
             embody.object_basis.canvas_context.fill();
             embody.object_basis.canvas_context.stroke();
-        }
+        });
     }
 }
