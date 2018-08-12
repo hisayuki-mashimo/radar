@@ -126,7 +126,7 @@ export default class PolyhedronBasisTheta {
             const poses = new Array();
             let zIndex = 0;
 
-            embody.surfaces[i].forEach((posCode) => {
+            embody.surfaces[i].forEach((posCode: string) => {
                 const LS0 = GeometryCalculator.getLengthesByTheta('Z', embody.reles[posCode].X);
                 const RY0 = LS0.Y;
                 const LZ0 = LS0.X;

@@ -21,6 +21,7 @@ export interface Params {
   rotate_theta: number;
   vector_theta: number;
   length_theta: number;
+  distanceCoefficient?: number;
 };
 
 class CoordinateManager {
@@ -45,7 +46,8 @@ class CoordinateManager {
     rotate_theta: 0,
     vector_theta: 0,
     length_theta: 0,
-  };
+    distanceCoefficient: undefined,
+  }
 
   constructor(params?: Partial<Params>) {
     if (params) {
@@ -53,11 +55,9 @@ class CoordinateManager {
     }
   }
 
-  setParams(params?: Partial<Params>) {
+  setParams(params: Partial<Params>) {
     for (let key in params) {
-      if (this.params[key] !== undefined) {
-        this.params[key] = params[key];
-      }
+      this.params[key] = params[key];
     }
   }
 

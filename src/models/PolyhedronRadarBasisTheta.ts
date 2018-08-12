@@ -98,8 +98,8 @@ export default class PolyhedronRadarBasisTheta {
                 };
             }
             if (embody.setDirection === undefined) {
-                embody.setDirection = function (rotate_theta, vector_theta, length_theta) {
-                    ref.setDirection(this, rotate_theta, vector_theta, length_theta);
+                embody.setDirection = function (rotate_theta, vector_theta, length_theta, distanceCoefficient?) {
+                    ref.setDirection(this, rotate_theta, vector_theta, length_theta, distanceCoefficient);
                 };
             }
             if (embody.output === undefined) {
@@ -109,7 +109,7 @@ export default class PolyhedronRadarBasisTheta {
             }
 
             embody.object_basis.canvas_context.font = "12px";
-            //embody.object_basis.canvas_context.font = "12px "osaka,sans-serif"";
+            // embody.object_basis.canvas_context.font = "12px "osaka,sans-serif"";
 
             // 初期化
             this.configure(embody);
@@ -196,12 +196,12 @@ export default class PolyhedronRadarBasisTheta {
      * @param   Object  embody
      * @param   Array   parameters
      */
-    configureParam(embody, parameters): void {
+    configureParam(embody, parameters: Array<number>): void {
         if (parameters.length !== embody.parameter_relations.length) {
             throw `Invalid parameter length(request: ${parameters.length}, capacity: ${embody.parameter_relations.length}).`;
         }
 
-        embody.parameter_relations.forEach((relCode, i) => {
+        embody.parameter_relations.forEach((relCode: string, i: number) => {
             const relParam = embody.object_basis.reles[relCode];
             const parameterLength = (parameters[i] / 100) * relParam.R;
 
@@ -228,8 +228,13 @@ export default class PolyhedronRadarBasisTheta {
      * @param   number  rotateTheta
      * @param   number  vectorTheta
      * @param   number  lengthTheta
+     * @param   number  distanceCoefficient
      */
-    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number): void {
+    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number, distanceCoefficient?: number): void {
+        if (distanceCoefficient !== undefined) {
+            if (distanceCoefficient <= 1) throw "Invalid distanceCoefficient.";
+        }
+
         const {
             getLengthByPytha,
             getLengthesByTheta,
@@ -255,7 +260,7 @@ export default class PolyhedronRadarBasisTheta {
                 const surface = surfaces[surfaceCode];
                 let zIndex = 0;
 
-                surface.forEach((posCode) => {
+                surface.forEach((posCode: string) => {
                     let X = 0;
                     let Y = 0;
                     let Z = 0;
@@ -276,10 +281,11 @@ export default class PolyhedronRadarBasisTheta {
                         const LZ2 = LS2.Y * RX1;
                         const RY2 = getLengthByPytha(null, LX2, LY1);
                         const TY2 = getThetaByLengthes("Y", LX2, LY1);
+                        const VL0 = LZ2 + (distanceCoefficient || 0);
                         const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2;
-                        const LY3 = LS3.Y * RY2;
+                        const LX3 = LS3.X * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
+                        const LY3 = LS3.Y * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
 
                         X = LX3 * reles[posCode].R;
                         Y = LY3 * reles[posCode].R;

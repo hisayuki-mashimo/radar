@@ -1,6 +1,4 @@
 import Gauze from "containers/Gauze/Main";
-import CoordinateManager from "models/CoordinateManager";
-import ParameterManager from "models/ParameterManager";
 import PolyhedronBasisTheta from "models/PolyhedronBasisTheta";
 import PolyhedronRadarBasisTheta from "models/PolyhedronRadarBasisTheta";
 import React from "react";
@@ -35,14 +33,12 @@ class RadarViewer extends React.Component {
       length_theta_base: (0) / 180 * Math.PI,
     };
 
-    const coordinateManager = new CoordinateManager(coordinateParams);
-    const parameterManager = new ParameterManager(props.parameters);
+    this.props.coordinateManager.setParams(coordinateParams);
+    this.props.parameterManager.setParameters(props.parameters);
 
     this.state = {
       radarOperater: radarOperater,
       radarObject: null,
-      coordinateManager: coordinateManager,
-      parameterManager: parameterManager,
       radar_center_X: 0,
       radar_center_Y: 0,
       params: {
@@ -69,7 +65,7 @@ class RadarViewer extends React.Component {
     canvasNode.setAttribute("height", "351px");
 
     this.state.radarOperater.setCanvasContext(canvasContext);
-    this.state.coordinateManager.setParams({
+    this.props.coordinateManager.setParams({
       center_X: (rect.left + scrollLeft) + (351 / 2),
       center_Y: (rect.top + scrollTop) + (351 / 2),
       max_radius: (351 / 2),
@@ -96,7 +92,7 @@ class RadarViewer extends React.Component {
     if (nextProps.parameterType !== this.props.parameterType) {
       this.makeRadar(nextProps);
     } else {
-      this.state.parameterManager.setParameters(nextProps.parameters);
+      this.props.parameterManager.setParameters(nextProps.parameters);
     }
   }
 
@@ -121,7 +117,7 @@ class RadarViewer extends React.Component {
   makeRadar = (props) => {
     const parameterValue = this.getParameterTypeValue(props.parameterType);
     const radarObject = this.state.radarOperater.summons(parameterValue.objectCode, { ...this.state.params, ...parameterValue.params });
-    this.state.parameterManager.setParameters(props.parameters);
+    this.props.parameterManager.setParameters(props.parameters);
 
     const state = {
       radarObject: radarObject,
@@ -139,28 +135,31 @@ class RadarViewer extends React.Component {
     const { radarObject } = state;
 
     if (this.state.move_switch === true) {
-      this.state.coordinateManager.move();
+      this.props.coordinateManager.move();
     }
 
-    this.state.coordinateManager.slide();
+    this.props.coordinateManager.slide();
 
-    const { rotate_theta, vector_theta, length_theta } = this.state.coordinateManager.params;
+    const { rotate_theta, vector_theta, length_theta, distanceCoefficient } = this.props.coordinateManager.params;
 
-    radarObject.configureParam(this.state.parameterManager.params.parametersProgress);
-    radarObject.setDirection(rotate_theta, vector_theta, length_theta);
+    radarObject.configureParam(this.props.parameterManager.params.parametersProgress);
+    radarObject.setDirection(rotate_theta, vector_theta, length_theta, distanceCoefficient);
+    //console.log(this.props.coordinateManager);
+    //console.log(this.props.coordinateManager.a, this.props.coordinateManager.params.distanceCoefficient);
+    //console.log(distanceCoefficient);
     radarObject.output();
-    this.state.parameterManager.progress();
+    this.props.parameterManager.progress();
   };
 
   onMouseDown = (x, y) => {
     this.setState({ move_switch: true });
 
-    this.state.coordinateManager.resetAxis(x, y);
+    this.props.coordinateManager.resetAxis(x, y);
   };
 
   onMouseMove = (x, y) => {
     if (this.state.move_switch === true) {
-      this.state.coordinateManager.changeAxis(x, y);
+      this.props.coordinateManager.changeAxis(x, y);
     }
   };
 
@@ -168,7 +167,7 @@ class RadarViewer extends React.Component {
     if (this.state.move_switch === true) {
       this.setState({ move_switch: false });
 
-      this.state.coordinateManager.setAxis(x, y);
+      this.props.coordinateManager.setAxis(x, y);
     }
   };
 

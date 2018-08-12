@@ -1,10 +1,24 @@
 import RadarViewer from "containers/RadarViewer/Main";
 import Title from "containers/Title/Main";
 import Form from "containers/Form/Main";
+import CoordinateManager from "models/CoordinateManager";
+import ParameterManager from "models/ParameterManager";
 import React from "react";
 import * as styles from "./styles.scss";
 
 class Layout extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const coordinateManager = new CoordinateManager();
+    const parameterManager = new ParameterManager();
+
+    this.state = {
+      coordinateManager,
+      parameterManager,
+    };
+  }
+
   render() {
     return (
       <div className={styles.contentsFrame}>
@@ -12,13 +26,24 @@ class Layout extends React.Component {
           <Title />
         </div>
         <div className={styles.radarFrame}>
-          <RadarViewer />
+          <RadarViewer
+            coordinateManager={this.state.coordinateManager}
+            parameterManager={this.state.parameterManager}
+          />
         </div>
         <div className={styles.formFrame}>
-          <Form />
+          <Form
+          setDistanceCoefficient={this.setDistanceCoefficient}
+          />
         </div>
       </div>
     );
+  }
+
+  setDistanceCoefficient = (distanceCoefficient: number) => {
+    this.state.coordinateManager.setParams({
+      distanceCoefficient,
+    });
   }
 }
 
