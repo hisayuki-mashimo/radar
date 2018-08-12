@@ -41,6 +41,11 @@ export const fetchParameters = async (sei: string, mei: string, parameterType: n
   );
 };
 
+export const setDistanceSwitch = (distanceSwitch: boolean): Action => ({
+  type: "SET_DISTANCE_SWITCH",
+  distanceSwitch,
+});
+
 export const requestUser = (sei: string, mei: string): ThunkAction<Promise<void>, {}, {}> => (
   async (dispatch, getState) => {
     const parameterType = getState().parameterType;

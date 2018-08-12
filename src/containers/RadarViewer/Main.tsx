@@ -11,6 +11,7 @@ const mapStateToProps = (state) => {
     user: state.user,
     parameterType: state.parameterType,
     parameters: state.parameters,
+    distanceSwitch: state.distanceSwitch,
   };
 };
 
@@ -91,7 +92,7 @@ class RadarViewer extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.parameterType !== this.props.parameterType) {
       this.makeRadar(nextProps);
-    } else {
+    } else if (nextProps.parameters.toString() !== this.props.parameters.toString()) {
       this.props.parameterManager.setParameters(nextProps.parameters);
     }
   }
@@ -143,10 +144,12 @@ class RadarViewer extends React.Component {
     const { rotate_theta, vector_theta, length_theta, distanceCoefficient } = this.props.coordinateManager.params;
 
     radarObject.configureParam(this.props.parameterManager.params.parametersProgress);
-    radarObject.setDirection(rotate_theta, vector_theta, length_theta, distanceCoefficient);
-    //console.log(this.props.coordinateManager);
-    //console.log(this.props.coordinateManager.a, this.props.coordinateManager.params.distanceCoefficient);
-    //console.log(distanceCoefficient);
+    radarObject.setDirection(
+      rotate_theta,
+      vector_theta,
+      length_theta,
+      this.props.distanceSwitch ? distanceCoefficient : undefined,
+    );
     radarObject.output();
     this.props.parameterManager.progress();
   };

@@ -38,6 +38,7 @@ yarn add redux-thunk
 yarn add tslint-loader
 yarn add tslint-config-airbnb
 yarn add --dev eslint babel-eslint eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y eslint-config-airbnb
+yarn add classnames
 tslint-react
 
 yarn run build --mode=development

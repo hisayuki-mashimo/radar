@@ -1,0 +1,23 @@
+.meter-box {
+    position: relative;
+    width: 100px;
+    height: 22px;
+    background-color: #000044;
+
+    &.disable {
+        background-color: #000022;
+    }
+}
+
+.handle {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    border: solid 1px #aaaaff;
+    background-color: #ffffff;
+
+    &.disable {
+        border: solid 1px #8888aa;
+        background-color: #aaaaaa;
+    }
+}

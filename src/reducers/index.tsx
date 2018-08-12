@@ -27,6 +27,7 @@ export const RState = Record({
   },
   parameterType: 8,
   parameters: [0, 0, 0, 0, 0, 0],
+  distanceSwitch: false,
 });
 
 export class State extends RState {
@@ -48,6 +49,8 @@ const reducer: Reducer<State> = (
     case "RESET_PARAMETERS":
       return state.set("parameterType", action.parameterType)
         .set("parameters", action.parameters);
+    case "SET_DISTANCE_SWITCH":
+      return state.set("distanceSwitch", action.distanceSwitch);
     default:
       return state;
   }

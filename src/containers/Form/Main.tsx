@@ -1,14 +1,23 @@
-import { requestParameterType, requestUser } from "actions";
+import { requestParameterType, requestUser, setDistanceSwitch } from "actions";
+import FormMeter from "containers/Form/Meter/Main";
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import * as styles from "./styles.scss";
 
+const MIN_DISTANCE_COEFFICIENT = 2;
+const MAX_DISTANCE_COEFFICIENT = 20;
+
+const mapStateToProps = (state) => ({
+  distanceSwitch: state.distanceSwitch,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch<{}>) => ({
   ...bindActionCreators({
     requestParameterType,
     requestUser,
+    setDistanceSwitch,
   }, dispatch)
 });
 
@@ -19,7 +28,6 @@ class Form extends React.Component {
     this.state = {
       sei: "",
       mei: "",
-      distanceCoefficientSwitch: false,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -41,8 +49,15 @@ class Form extends React.Component {
               <option value="12">適正能力</option>
               <option value="20">耐性能力</option>
             </select>
-            <input type="checkbox" onClick={this.setDistanceCoefficientSwitch} />
-            <input type="text" onChange={this.setDistanceCoefficient} />
+            <input type="checkbox"
+              checked={this.props.distanceSwitch}
+              onClick={this.onSwitchCheck}
+            />
+            <FormMeter
+              percentage={1}
+              enable={this.props.distanceSwitch}
+              onChange={this.setDistanceCoefficient}
+            />
           </div>
         </form>
       </div>
@@ -70,24 +85,21 @@ class Form extends React.Component {
     );
   }
 
-  setDistanceCoefficientSwitch = (event) => {
+  onSwitchCheck = (event) => {
     const element = event.target;
 
-    this.setState({
-      distanceCoefficientSwitch: element.checked,
-    });
+    this.props.setDistanceSwitch(element.checked);
   }
 
-  setDistanceCoefficient = (event) => {
-    if (! this.state.distanceCoefficientSwitch) return;
+  setDistanceCoefficient = (percentage: number) => {
+    if (! this.props.distanceSwitch) return;
 
-    const element = event.target;
-    const distanceCoefficient = parseInt(element.value);
+    const min = MIN_DISTANCE_COEFFICIENT;
+    const max = MAX_DISTANCE_COEFFICIENT;
+    const distanceCoefficient = percentage * (max - min) + min;
 
-    if (distanceCoefficient > 0) {
-      this.props.setDistanceCoefficient(distanceCoefficient);
-    }
+    this.props.setDistanceCoefficient(distanceCoefficient);
   }
 }
 
-export default connect(null, mapDispatchToProps)(Form);
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
