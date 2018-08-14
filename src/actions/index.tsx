@@ -23,7 +23,7 @@ export const resetParameters = (parameterType: number, parameters: Array<number>
 });
 
 export const fetchParameters = async (sei: string, mei: string, parameterType: number) => {
-  const apiUrl = "http://localhost:3000";
+  const apiUrl = "http://localhost:3001";
 
   return await fetch(
     `${apiUrl}/api/parameter`,
@@ -90,7 +90,7 @@ export const requestParameterType = (parameterType): ThunkAction<Promise<void>, 
           break;
       }
 
-      for (let i = 0; i < parameterCount; i ++) {
+      for (let i = 0; i < parameterCount; i++) {
         parameters.push(0);
       }
     }

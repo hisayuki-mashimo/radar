@@ -281,11 +281,41 @@ export default class PolyhedronRadarBasisTheta {
                         const LZ2 = LS2.Y * RX1;
                         const RY2 = getLengthByPytha(null, LX2, LY1);
                         const TY2 = getThetaByLengthes("Y", LX2, LY1);
+                        /*
+                        const TY3 = TY2 + axisTheta;
+                        const LS3 = getLengthesByTheta("Y", TY3);
+                        const LX3 = LS3.X * RY2;
+                        const LY3 = LS3.Y * RY2;
+                        */
                         const VL0 = LZ2 + (distanceCoefficient || 0);
                         const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta("Y", TY3);
                         const LX3 = LS3.X * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
                         const LY3 = LS3.Y * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
+                        /*
+                        let K4 = 1;
+                        if (distanceCoefficient) {
+                            const k1 = Math.atan(distanceCoefficient / RY2);
+                            const k3 = Math.atan((distanceCoefficient + LZ2) / RY2);
+                            K4 = k3 / k1;
+                        }
+                        const TY3 = TY2 + axisTheta;
+                        const LS3 = getLengthesByTheta("Y", TY3);
+                        const LX3 = LS3.X * RY2 * K4;
+                        const LY3 = LS3.Y * RY2 * K4;
+                        */
+                        /*
+                        let K4 = 1;
+                        if (distanceCoefficient) {
+                            const RX0 = { A: distanceCoefficient, B: 1 };
+                            const RYX0 = (distanceCoefficient + LZ2) * (RX0.B / RX0.A);
+                            K4 = RY2 / RYX0;
+                        }
+                        const TY3 = TY2 + axisTheta;
+                        const LS3 = getLengthesByTheta("Y", TY3);
+                        const LX3 = LS3.X * RY2 * K4;
+                        const LY3 = LS3.Y * RY2 * K4;
+                        */
 
                         X = LX3 * reles[posCode].R;
                         Y = LY3 * reles[posCode].R;

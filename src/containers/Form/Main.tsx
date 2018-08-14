@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import * as styles from "./styles.scss";
 
-const MIN_DISTANCE_COEFFICIENT = 2;
+const MIN_DISTANCE_COEFFICIENT = 1.2;
 const MAX_DISTANCE_COEFFICIENT = 20;
 
 const mapStateToProps = (state) => ({
@@ -92,7 +92,7 @@ class Form extends React.Component {
   }
 
   setDistanceCoefficient = (percentage: number) => {
-    if (! this.props.distanceSwitch) return;
+    if (!this.props.distanceSwitch) return;
 
     const min = MIN_DISTANCE_COEFFICIENT;
     const max = MAX_DISTANCE_COEFFICIENT;
