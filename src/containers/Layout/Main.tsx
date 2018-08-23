@@ -33,16 +33,16 @@ class Layout extends React.Component {
         </div>
         <div className={styles.formFrame}>
           <Form
-          setDistanceCoefficient={this.setDistanceCoefficient}
+          setViewTheta={this.setViewTheta}
           />
         </div>
       </div>
     );
   }
 
-  setDistanceCoefficient = (distanceCoefficient: number) => {
+  setViewTheta = (viewTheta: number) => {
     this.state.coordinateManager.setParams({
-      distanceCoefficient,
+      viewTheta,
     });
   }
 }

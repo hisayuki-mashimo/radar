@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import * as styles from "./styles.scss";
 
-const MIN_DISTANCE_COEFFICIENT = 1.2;
-const MAX_DISTANCE_COEFFICIENT = 20;
+const MIN_VIEW_THETA = (10 / 180) * Math.PI;
+const MAX_VIEW_THETA = (45 / 180) * Math.PI;
 
 const mapStateToProps = (state) => ({
   distanceSwitch: state.distanceSwitch,
@@ -56,7 +56,7 @@ class Form extends React.Component {
             <FormMeter
               percentage={1}
               enable={this.props.distanceSwitch}
-              onChange={this.setDistanceCoefficient}
+              onChange={this.setViewTheta}
             />
           </div>
         </form>
@@ -91,14 +91,14 @@ class Form extends React.Component {
     this.props.setDistanceSwitch(element.checked);
   }
 
-  setDistanceCoefficient = (percentage: number) => {
+  setViewTheta = (percentage: number) => {
     if (!this.props.distanceSwitch) return;
 
-    const min = MIN_DISTANCE_COEFFICIENT;
-    const max = MAX_DISTANCE_COEFFICIENT;
-    const distanceCoefficient = percentage * (max - min) + min;
+    const min = MIN_VIEW_THETA;
+    const max = MAX_VIEW_THETA;
+    const viewTheta = percentage * (max - min) + min;
 
-    this.props.setDistanceCoefficient(distanceCoefficient);
+    this.props.setViewTheta(viewTheta);
   }
 }
 

@@ -45,8 +45,7 @@
     "webpack-dev-server": "^3.1.1"
   },
   "scripts": {
-    "build": "webpack --progress",
-    "build:dev": "build --mode=development",
+    "build": "webpack --progress --mode=development",
     "dev": "webpack-dev-server --mode=development",
     "lint": "tslint 'src/**/*.ts{,x}'"
   }

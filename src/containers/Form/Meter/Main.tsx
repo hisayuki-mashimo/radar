@@ -131,23 +131,23 @@ class FormMeter extends React.Component {
     });
   }
 
-  setDistanceCoefficientSwitch = (event) => {
+  setViewThetaSwitch = (event) => {
     const element = event.target;
 
     this.setState({
-      distanceCoefficientSwitch: element.checked,
+      viewThetaSwitch: element.checked,
     });
   }
 
-  setDistanceCoefficient = (event) => {
+  setViewTheta = (event) => {
     if (! this.props.enable) return;
-    if (! this.state.distanceCoefficientSwitch) return;
+    if (! this.state.viewThetaSwitch) return;
 
     const element = event.target;
-    const distanceCoefficient = parseInt(element.value);
+    const viewTheta = parseInt(element.value);
 
-    if (distanceCoefficient > 0) {
-      this.props.setDistanceCoefficient(distanceCoefficient);
+    if (viewTheta > 0) {
+      this.props.setViewTheta(viewTheta);
     }
   }
 }

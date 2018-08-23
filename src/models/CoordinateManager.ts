@@ -21,7 +21,7 @@ export interface Params {
   rotate_theta: number;
   vector_theta: number;
   length_theta: number;
-  distanceCoefficient?: number;
+  viewTheta?: number;
 };
 
 class CoordinateManager {
@@ -46,7 +46,7 @@ class CoordinateManager {
     rotate_theta: 0,
     vector_theta: 0,
     length_theta: 0,
-    distanceCoefficient: undefined,
+    viewTheta: undefined,
   }
 
   constructor(params?: Partial<Params>) {

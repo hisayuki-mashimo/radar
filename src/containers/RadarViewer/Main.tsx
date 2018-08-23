@@ -141,14 +141,14 @@ class RadarViewer extends React.Component {
 
     this.props.coordinateManager.slide();
 
-    const { rotate_theta, vector_theta, length_theta, distanceCoefficient } = this.props.coordinateManager.params;
+    const { rotate_theta, vector_theta, length_theta, viewTheta } = this.props.coordinateManager.params;
 
     radarObject.configureParam(this.props.parameterManager.params.parametersProgress);
     radarObject.setDirection(
       rotate_theta,
       vector_theta,
       length_theta,
-      this.props.distanceSwitch ? distanceCoefficient : undefined,
+      this.props.distanceSwitch ? viewTheta : undefined,
     );
     radarObject.output();
     this.props.parameterManager.progress();

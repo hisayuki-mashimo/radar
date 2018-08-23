@@ -98,8 +98,8 @@ export default class PolyhedronRadarBasisTheta {
                 };
             }
             if (embody.setDirection === undefined) {
-                embody.setDirection = function (rotate_theta, vector_theta, length_theta, distanceCoefficient?) {
-                    ref.setDirection(this, rotate_theta, vector_theta, length_theta, distanceCoefficient);
+                embody.setDirection = function (rotate_theta, vector_theta, length_theta, viewTheta?) {
+                    ref.setDirection(this, rotate_theta, vector_theta, length_theta, viewTheta);
                 };
             }
             if (embody.output === undefined) {
@@ -228,11 +228,14 @@ export default class PolyhedronRadarBasisTheta {
      * @param   number  rotateTheta
      * @param   number  vectorTheta
      * @param   number  lengthTheta
-     * @param   number  distanceCoefficient
+     * @param   number  viewTheta
      */
-    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number, distanceCoefficient?: number): void {
-        if (distanceCoefficient !== undefined) {
-            if (distanceCoefficient <= 1) throw "Invalid distanceCoefficient.";
+    setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number, viewTheta?: number): void {
+        let focalLength = 0;
+        let viewLength = 0;
+        if (viewTheta) {
+            focalLength = 1 / Math.sin(viewTheta);
+            viewLength = focalLength - 1;
         }
 
         const {
@@ -287,35 +290,22 @@ export default class PolyhedronRadarBasisTheta {
                         const LX3 = LS3.X * RY2;
                         const LY3 = LS3.Y * RY2;
                         */
-                        const VL0 = LZ2 + (distanceCoefficient || 0);
-                        const TY3 = TY2 + axisTheta;
-                        const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
-                        const LY3 = LS3.Y * RY2 * (distanceCoefficient ? (VL0 / distanceCoefficient) : 1);
                         /*
-                        let K4 = 1;
-                        if (distanceCoefficient) {
-                            const k1 = Math.atan(distanceCoefficient / RY2);
-                            const k3 = Math.atan((distanceCoefficient + LZ2) / RY2);
-                            K4 = k3 / k1;
-                        }
+                        const VL0 = LZ2 + (viewTheta || 0);
                         const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2 * K4;
-                        const LY3 = LS3.Y * RY2 * K4;
+                        const LX3 = LS3.X * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
+                        const LY3 = LS3.Y * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
                         */
-                        /*
-                        let K4 = 1;
-                        if (distanceCoefficient) {
-                            const RX0 = { A: distanceCoefficient, B: 1 };
-                            const RYX0 = (distanceCoefficient + LZ2) * (RX0.B / RX0.A);
-                            K4 = RY2 / RYX0;
+                        let Rx = RY2;
+                        if (viewTheta) {
+                            Rx = RY2 * viewLength / (focalLength + LZ2);
                         }
+
                         const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2 * K4;
-                        const LY3 = LS3.Y * RY2 * K4;
-                        */
+                        const LX3 = LS3.X * Rx;
+                        const LY3 = LS3.Y * Rx;
 
                         X = LX3 * reles[posCode].R;
                         Y = LY3 * reles[posCode].R;
