@@ -1,0 +1,450 @@
+<html>
+  <body>
+    <canvas id="X">
+    </canvas>
+    <div id="monitor">
+    </div>
+    <script>
+      var canvas = document.getElementById("X");
+      var context = canvas.getContext("2d");
+
+      var alpha = 200;
+      var center = alpha + 0.5;
+      var strokeOpacity = 1;
+      var fillOpacity   = 0.75;
+
+      canvas.setAttribute("width", center * 2);
+      canvas.setAttribute("height", center * 2);
+      context.strokeStyle = "rgba(128, 128, 128, " + strokeOpacity + ")";
+      context.fillStyle   = "rgba(255, 255, 255, " + fillOpacity   + ")";
+
+      var monitor = document.getElementById("monitor");
+
+      var thetaX = Math.acos(Math.pow(3, 1 / 2) / 3);
+
+      var reles = {
+        A: { X: thetaX,           Y: Math.PI / 4 },
+        B: { X: thetaX,           Y: Math.PI / 4 * 3 },
+        C: { X: thetaX,           Y: Math.PI / 4 * 5 },
+        D: { X: thetaX,           Y: Math.PI / 4 * 7 },
+        E: { X: Math.PI - thetaX, Y: Math.PI / 4 },
+        F: { X: Math.PI - thetaX, Y: Math.PI / 4 * 3 },
+        G: { X: Math.PI - thetaX, Y: Math.PI / 4 * 5 },
+        H: { X: Math.PI - thetaX, Y: Math.PI / 4 * 7 },
+      };
+
+      var surfaces = {
+        O: ['A', 'B', 'C', 'D'],
+        R: ['E', 'F', 'G', 'H'],
+        A: ['A', 'B', 'F', 'E'],
+        B: ['B', 'C', 'G', 'F'],
+        C: ['C', 'D', 'H', 'G'],
+        D: ['D', 'A', 'E', 'H'],
+      };
+
+      var moment_poses = {};
+
+      var getLengthByPytha = (hypotenuse, cathetus1, cathetus2) => {
+        switch (null) {
+          case hypotenuse: return Math.pow((Math.pow(cathetus1,  2) + Math.pow(cathetus2, 2)), (1 / 2));
+          case cathetus1:  return Math.pow((Math.pow(hypotenuse, 2) - Math.pow(cathetus2, 2)), (1 / 2));
+          case cathetus2:  return Math.pow((Math.pow(hypotenuse, 2) - Math.pow(cathetus1, 2)), (1 / 2));
+        }
+      };
+
+      var getThetaByLengthes = (theta_code, X, Y) => {
+        var X_ABS = Math.abs(X);
+        var Y_ABS = Math.abs(Y);
+        var TA_ZR = 0;
+        var TA_LG = Math.PI / 2;
+        var TR_ZR = Math.PI * -1;
+        var TR_LG = (Math.PI * -1) / 2;
+
+        switch (theta_code) {
+          case 'X':
+            switch (true) {
+              case ((X >  0) && (Y >  0)): return TR_LG + Math.atan(Y_ABS / X_ABS);
+              case ((X >  0) && (Y <= 0)): return TR_LG - Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y >  0)): return TA_LG - Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y <= 0)): return TA_LG + Math.atan(Y_ABS / X_ABS);
+              case ((X == 0) && (Y >  0)): return TA_ZR;
+              case ((X == 0) && (Y <= 0)): return TR_ZR;
+            }
+            break;
+
+          case 'Y':
+            switch (true) {
+              case ((X >  0) && (Y >  0)): return TR_LG - Math.atan(Y_ABS / X_ABS);
+              case ((X >  0) && (Y <= 0)): return TR_LG + Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y >  0)): return TA_LG + Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y <= 0)): return TA_LG - Math.atan(Y_ABS / X_ABS);
+              case ((X == 0) && (Y >  0)): return TR_ZR;
+              case ((X == 0) && (Y <= 0)): return TA_ZR;
+            }
+            break;
+
+          case 'Z':
+            switch (true) {
+              case ((X >  0) && (Y >  0)): return TA_ZR - Math.atan(Y_ABS / X_ABS);
+              case ((X >  0) && (Y <= 0)): return TA_ZR + Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y >  0)): return TR_ZR + Math.atan(Y_ABS / X_ABS);
+              case ((X <  0) && (Y <= 0)): return TR_ZR - Math.atan(Y_ABS / X_ABS);
+              case ((X == 0) && (Y >  0)): return TR_LG;
+              case ((X == 0) && (Y <= 0)): return TA_LG;
+            }
+            break;
+        }
+      };
+
+      var getLengthesByTheta = (theta_code, theta) => {
+        theta = theta % (Math.PI * 2);
+        theta = (theta > Math.PI) ? (theta - (Math.PI * 2)) : theta;
+        theta = (theta < Math.PI * -1) ? (theta + (Math.PI * 2)) : theta;
+
+        var T_ABS = Math.abs(theta);
+        var S_ABS = Math.abs(Math.sin(theta));
+        var C_ABS = Math.abs(Math.cos(theta));
+        var TA_ZR = 0;
+        var TA_LG = Math.PI / 2;
+        var TR_ZR = Math.PI * -1;
+        var TR_LG = (Math.PI * -1) / 2;
+
+        switch (theta_code) {
+          case 'X':
+            var X = (theta > TA_ZR) ? S_ABS * -1 : S_ABS;
+            var Y = (T_ABS > TA_LG) ? C_ABS * -1 : C_ABS;
+            break;
+
+          case 'Y':
+            var X = (theta > TA_ZR) ? S_ABS * -1 : S_ABS;
+            var Y = (T_ABS > TA_LG) ? C_ABS : C_ABS * -1;
+            break;
+
+          case 'Z':
+            var X = (T_ABS > TA_LG) ? C_ABS * -1 : C_ABS;
+            var Y = (theta > TA_ZR) ? S_ABS * -1 : S_ABS;
+            break;
+        }
+
+        return { X: X, Y: Y };
+      };
+
+      var getThetasByRelative = (base_rotateTheta, base_vectorTheta, base_lengthTheta, move_rotateTheta, move_vectorTheta, move_lengthTheta) => {
+        var TA0 = move_vectorTheta - (Math.PI / 2);
+        var TY0 = base_vectorTheta - TA0;
+        var LS0 = getLengthesByTheta('Z', base_lengthTheta);
+        var RY0 = LS0.Y;
+        var LZ0 = LS0.X;
+        var LS1 = getLengthesByTheta('Y', TY0);
+        var LX1 = LS1.X * RY0;
+        var LY1 = LS1.Y * RY0;
+        var RX1 = getLengthByPytha(null, LX1, LZ0);
+        var TX1 = getThetaByLengthes('X', LX1, LZ0);
+        var TX2 = TX1 + move_lengthTheta;
+        var LS2 = getLengthesByTheta('X', TX2);
+        var LX2 = LS2.X * RX1;
+        var LZ2 = LS2.Y * RX1;
+        var RY2 = getLengthByPytha(null, LX2, LY1);
+        var TL2 = getThetaByLengthes('Z', LZ2, RY2);
+        var TV2 = getThetaByLengthes('Y', LX2, LY1);
+
+        if (LY1 == 0) {
+            var TX = 0;
+        } else {
+          var LS3 = getLengthesByTheta('X', TX1);
+          var LX3 = LS3.X * RX1;
+          var LZ3 = LS3.Y * RX1;
+          var RY3 = getLengthByPytha(null, LX3, LY1);
+          var TL3 = getThetaByLengthes('Z', LZ3, RY3);
+          var TV3 = getThetaByLengthes('Y', LX3, LY1);
+          var L0 = Math.sin(TV3);
+          var L1 = Math.cos(TV3);
+          var L2 = Math.cos(TL3) * L1;
+          var T0 = getThetaByLengthes('Y', L2, L0);
+          var T1 = T0 + TV3;
+
+          var L3 = Math.sin(TV2);
+          var L4 = Math.cos(TV2);
+          var L5 = Math.cos(TL2) * L4;
+          var T2 = getThetaByLengthes('Y', L5, L3);
+          var T3 = T2 + TV2;
+          var TX = T3 - T1;
+        }
+
+        return {
+          rotateTheta: TX + base_rotateTheta,
+          vectorTheta: TV2 + TA0,
+          lengthTheta: TL2
+        };
+      };
+
+      var rotateTheta = (0 / 180) * Math.PI;
+      var vectorTheta = (0 / 180) * Math.PI;
+      var lengthTheta = (0 / 180) * Math.PI;
+      var viewingAngle = (0 / 180) * Math.PI;
+      var focalLength = 1 / Math.sin(viewingAngle) + 5;
+      var viewLength = focalLength - 1;
+      var move_switch   = false;
+      var latest_move_X = 0;
+      var latest_move_Y = 0;
+      var latest_base_X = 0;
+      var latest_base_Y = 0;
+      var move_type     = "vector";
+      var center_X = center;
+      var center_Y = center;
+      var max_radius = center * 3;
+      var move_rotateTheta = 0;
+      var move_vectorTheta = 0;
+      var move_lengthTheta = 0;
+      var diff_vectorTheta = 0;
+      var diff_rotateTheta = 0;
+      var diff_lengthTheta = 0;
+      var rotateTheta_base = 0;
+      var vectorTheta_base = 0;
+      var lengthTheta_base = 0;
+      var viewTheta = undefined;
+
+      var output = () => {
+        if (move_switch === true) {
+          move();
+        }
+
+        slide();
+
+        var focalLength = 0;
+        var viewLength = 0;
+
+        if (viewTheta) {
+          focalLength = 1 / Math.sin(viewTheta);
+          viewLength = focalLength - 1;
+        }
+
+        var momentSurfaces = [];
+
+        var axisTheta = (vectorTheta - (Math.PI / 2));
+
+        for (var surfaceCode in surfaces) {
+          var zIndex = 0;
+
+          surfaces[surfaceCode].forEach((posCode) => {
+            var X = 0;
+            var Y = 0;
+            var Z = 0;
+
+            if (posCode !== "O") {
+              var LS0 = getLengthesByTheta("Z", reles[posCode].X);
+              var RY0 = LS0.Y;
+              var LZ0 = LS0.X;
+              var TY1 = reles[posCode].Y + rotateTheta - axisTheta;
+              var LS1 = getLengthesByTheta("Y", TY1);
+              var LX1 = LS1.X * RY0;
+              var LY1 = LS1.Y * RY0;
+              var TX1 = getThetaByLengthes("X", LX1, LZ0);
+              var RX1 = getLengthByPytha(null, LX1, LZ0);
+              var TX2 = TX1 + lengthTheta;
+              var LS2 = getLengthesByTheta("X", TX2);
+              var LX2 = LS2.X * RX1;
+              var LZ2 = LS2.Y * RX1;
+              var RY2 = getLengthByPytha(null, LX2, LY1);
+              var TY2 = getThetaByLengthes("Y", LX2, LY1);
+
+              var TY3 = TY2 + axisTheta;
+              var LS3 = getLengthesByTheta("Y", TY3);
+              var LX3 = LS3.X * RY2;
+              var LY3 = LS3.Y * RY2;
+              /*
+              var VL0 = LZ2 + (viewTheta || 0);
+              var TY3 = TY2 + axisTheta;
+              var LS3 = getLengthesByTheta("Y", TY3);
+              var LX3 = LS3.X * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
+              var LY3 = LS3.Y * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
+              */
+              /*
+              var Rx = RY2;
+              if (viewTheta) {
+                Rx = RY2 * viewLength / (focalLength + LZ2);
+              }
+
+              var TY3 = TY2 + axisTheta;
+              var LS3 = getLengthesByTheta("Y", TY3);
+              var LX3 = LS3.X * Rx;
+              var LY3 = LS3.Y * Rx;
+              */
+
+              X = LX3 * alpha;
+              Y = LY3 * alpha;
+              Z = LZ2 * alpha;
+            }
+
+            moment_poses[posCode] = { X: X, Y: Y, Z: Z };
+
+            zIndex += Z;
+          });
+
+          momentSurfaces.push({
+            code: surfaceCode,
+            z_index: (zIndex / surfaces[surfaceCode].length)
+          });
+        }
+
+        momentSurfaces.sort((A, B) => (A.z_index - B.z_index));
+
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, center * 2, center * 2);
+
+        momentSurfaces.forEach((momentSurface) => {
+          context.beginPath();
+
+          surfaces[momentSurface.code].forEach((posCode, j) => {
+            var pos = moment_poses[posCode];
+
+            if (j == 0) {
+              context.moveTo(center + pos.X, center + pos.Y);
+            } else {
+              context.lineTo(center + pos.X, center + pos.Y);
+            }
+          });
+
+          context.closePath();
+          context.fill();
+          context.stroke();
+        });
+      };
+
+      //var focalRadius = 1;
+      //var viewingAngle = Math.atan(1 / focalLength);
+
+      var move = () => {
+        rotateTheta_base = rotateTheta;
+        vectorTheta_base = vectorTheta;
+        lengthTheta_base = lengthTheta;
+
+        if (move_type === "vector") {
+          var diff_X = latest_move_X - latest_base_X;
+          var diff_Y = latest_move_Y - latest_base_Y;
+
+          var direction_X = (diff_X > 0) ? -1 : 1;
+          var direction_Y = (diff_Y > 0) ? 1 : -1;
+
+          let abs_X = Math.abs(diff_X);
+          let abs_Y = Math.abs(diff_Y);
+          if (abs_X > 30) abs_X = 30;
+          if (abs_Y > 30) abs_Y = 30;
+
+          var theta_diff_X = (abs_X / 200) * direction_X;
+          var theta_diff_Y = (abs_Y / 200) * direction_Y;
+
+          move_rotateTheta = 0;
+          move_vectorTheta = getThetaByLengthes('Y', theta_diff_X, theta_diff_Y) * -1 + Math.PI;
+          move_lengthTheta = 0;
+          diff_lengthTheta = getLengthByPytha(null, theta_diff_X, theta_diff_Y);
+          diff_rotateTheta = 0;
+        } else {
+          var LD0X = latest_base_X - center_X;
+          var LD0Y = latest_base_Y - center_Y;
+          var LD1X = latest_move_X - center_X;
+          var LD1Y = latest_move_Y - center_Y;
+
+          var TD0 = getThetaByLengthes('Y', LD0X, LD0Y);
+          var TD1 = getThetaByLengthes('Y', LD1X, LD1Y);
+          var TD2 = TD1 - TD0;
+
+          var direction_T = (TD2 > 0) ? 1 : -1;
+
+          let abs_T = Math.abs(TD2);
+          if (abs_T > 0.2) abs_T = 0.2;
+
+          var theta_diff = abs_T * direction_T;
+
+          move_rotateTheta = 0;
+          move_lengthTheta = 0;
+          diff_lengthTheta = 0;
+          diff_rotateTheta = theta_diff;
+        }
+
+        latest_base_X = latest_move_X;
+        latest_base_Y = latest_move_Y;
+      };
+
+      var slide = () => {
+        if (diff_lengthTheta > 0) {
+          move_lengthTheta += diff_lengthTheta;
+
+          var thetas = getThetasByRelative(
+            rotateTheta_base,
+            vectorTheta_base,
+            lengthTheta_base,
+            move_rotateTheta,
+            move_vectorTheta,
+            move_lengthTheta,
+          );
+
+          rotateTheta = thetas.rotateTheta;
+          vectorTheta = thetas.vectorTheta;
+          lengthTheta = thetas.lengthTheta;
+        } else if (diff_rotateTheta != 0) {
+          move_rotateTheta += diff_rotateTheta;
+          rotateTheta = rotateTheta_base + move_rotateTheta;
+          vectorTheta = vectorTheta_base + move_rotateTheta;
+        }
+      };
+
+      var animation_switch = true;
+      var animation = setInterval(function(){
+        output();
+      }, 50);
+
+      document.onmousedown = (event) => {
+        move_switch = true;
+
+        latest_move_X = event.clientX;
+        latest_move_Y = event.clientY;
+        latest_base_X = event.clientX;
+        latest_base_Y = event.clientY;
+
+        var relative_diff_X = latest_base_X - center_X;
+        var relative_diff_Y = latest_base_Y - center_Y;
+        var relative_diff_radius = getLengthByPytha(null, relative_diff_X, relative_diff_Y);
+
+        if (relative_diff_radius <= max_radius) {
+          move_type = "vector";
+        } else {
+          move_type = "rotate";
+        }
+      };
+
+      document.onmousemove = (event) => {
+        if (move_switch === true) {
+          latest_move_X = event.clientX;
+          latest_move_Y = event.clientY;
+        }
+      };
+
+      document.onmouseup = (event) => {
+        if (move_switch === true) {
+          move_switch = false;
+
+          latest_move_X = event.clientX;
+          latest_move_Y = event.clientY;
+        }
+      };
+
+      document.onkeydown = () => {
+        if (animation) {
+          clearInterval(animation);
+        }
+
+        if (animation_switch === false) {
+          animation_switch = true;
+          animation = setInterval(function () {
+            output(rotateTheta, vectorTheta, lengthTheta/*, viewTheta*/);
+          }, 50);
+        } else {
+          animation_switch = false;
+        }
+      };
+
+      output();
+    </script>
+  </body>
+</html>
