@@ -231,13 +231,6 @@ export default class PolyhedronRadarBasisTheta {
      * @param   number  viewTheta
      */
     setDirection(embody, rotateTheta: number, vectorTheta: number, lengthTheta: number, viewTheta?: number): void {
-        let focalLength = 0;
-        let viewLength = 0;
-        if (viewTheta) {
-            focalLength = 1 / Math.sin(viewTheta);
-            viewLength = focalLength - 1;
-        }
-
         const {
             getLengthByPytha,
             getLengthesByTheta,
@@ -252,6 +245,8 @@ export default class PolyhedronRadarBasisTheta {
             meter: embody.meter_surfaces,
             param: embody.param_surfaces
         };
+
+        const focalLength = viewTheta && 1 / Math.sin(viewTheta);
 
         const axisTheta = (vectorTheta - (Math.PI / 2));
 
@@ -282,30 +277,17 @@ export default class PolyhedronRadarBasisTheta {
                         const LS2 = getLengthesByTheta("X", TX2);
                         const LX2 = LS2.X * RX1;
                         const LZ2 = LS2.Y * RX1;
-                        const RY2 = getLengthByPytha(null, LX2, LY1);
                         const TY2 = getThetaByLengthes("Y", LX2, LY1);
-                        /*
-                        const TY3 = TY2 + axisTheta;
-                        const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2;
-                        const LY3 = LS3.Y * RY2;
-                        */
-                        /*
-                        const VL0 = LZ2 + (viewTheta || 0);
-                        const TY3 = TY2 + axisTheta;
-                        const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
-                        const LY3 = LS3.Y * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
-                        */
-                        let Rx = RY2;
+
+                        let RY2 = getLengthByPytha(null, LX2, LY1);
                         if (viewTheta) {
-                            Rx = RY2 * viewLength / (focalLength + LZ2);
+                            RY2 = RY2 / ((focalLength - LZ2) * Math.tan(viewTheta));
                         }
 
                         const TY3 = TY2 + axisTheta;
                         const LS3 = getLengthesByTheta("Y", TY3);
-                        const LX3 = LS3.X * Rx;
-                        const LY3 = LS3.Y * Rx;
+                        const LX3 = LS3.X * RY2;
+                        const LY3 = LS3.Y * RY2;
 
                         X = LX3 * reles[posCode].R;
                         Y = LY3 * reles[posCode].R;

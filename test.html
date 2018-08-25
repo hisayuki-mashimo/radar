@@ -183,7 +183,6 @@
       var lengthTheta = (0 / 180) * Math.PI;
       var viewingAngle = (0 / 180) * Math.PI;
       var focalLength = 1 / Math.sin(viewingAngle) + 5;
-      var viewLength = focalLength - 1;
       var move_switch   = false;
       var latest_move_X = 0;
       var latest_move_Y = 0;
@@ -202,7 +201,7 @@
       var rotateTheta_base = 0;
       var vectorTheta_base = 0;
       var lengthTheta_base = 0;
-      var viewTheta = undefined;
+      var viewTheta = (30 / 180) * Math.PI;
 
       var output = () => {
         if (move_switch === true) {
@@ -212,11 +211,9 @@
         slide();
 
         var focalLength = 0;
-        var viewLength = 0;
 
         if (viewTheta) {
           focalLength = 1 / Math.sin(viewTheta);
-          viewLength = focalLength - 1;
         }
 
         var momentSurfaces = [];
@@ -245,31 +242,16 @@
               var LS2 = getLengthesByTheta("X", TX2);
               var LX2 = LS2.X * RX1;
               var LZ2 = LS2.Y * RX1;
-              var RY2 = getLengthByPytha(null, LX2, LY1);
               var TY2 = getThetaByLengthes("Y", LX2, LY1);
 
+              var RY2 = getLengthByPytha(null, LX2, LY1);
+              if (viewTheta) {
+                RY2 = RY2 / ((focalLength - LZ2) * Math.tan(viewTheta));
+              }
               var TY3 = TY2 + axisTheta;
               var LS3 = getLengthesByTheta("Y", TY3);
               var LX3 = LS3.X * RY2;
               var LY3 = LS3.Y * RY2;
-              /*
-              var VL0 = LZ2 + (viewTheta || 0);
-              var TY3 = TY2 + axisTheta;
-              var LS3 = getLengthesByTheta("Y", TY3);
-              var LX3 = LS3.X * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
-              var LY3 = LS3.Y * RY2 * (viewTheta ? (VL0 / viewTheta) : 1);
-              */
-              /*
-              var Rx = RY2;
-              if (viewTheta) {
-                Rx = RY2 * viewLength / (focalLength + LZ2);
-              }
-
-              var TY3 = TY2 + axisTheta;
-              var LS3 = getLengthesByTheta("Y", TY3);
-              var LX3 = LS3.X * Rx;
-              var LY3 = LS3.Y * Rx;
-              */
 
               X = LX3 * alpha;
               Y = LY3 * alpha;
@@ -310,9 +292,6 @@
           context.stroke();
         });
       };
-
-      //var focalRadius = 1;
-      //var viewingAngle = Math.atan(1 / focalLength);
 
       var move = () => {
         rotateTheta_base = rotateTheta;
@@ -437,7 +416,7 @@
         if (animation_switch === false) {
           animation_switch = true;
           animation = setInterval(function () {
-            output(rotateTheta, vectorTheta, lengthTheta/*, viewTheta*/);
+            output();
           }, 50);
         } else {
           animation_switch = false;
