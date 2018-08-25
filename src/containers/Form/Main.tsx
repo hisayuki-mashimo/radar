@@ -26,8 +26,8 @@ class Form extends React.Component {
     super(props);
 
     this.state = {
-      sei: "",
       mei: "",
+      sei: "",
     };
 
     this.onChange = this.onChange.bind(this);

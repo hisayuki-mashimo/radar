@@ -4,8 +4,13 @@ import React from "react";
 import * as ReactDOM from "react-dom";
 import * as styles from "./styles.scss";
 
-class FormMeter extends React.Component {
-  constructor(props) {
+interface FormMeterProps {
+  percentage: number;
+  enable?: boolean;
+}
+
+class FormMeter extends React.Component<FormMeterProps> {
+  constructor(props: FormMeterProps) {
     super(props);
 
     this.state = {

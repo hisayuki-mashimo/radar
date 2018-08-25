@@ -48,14 +48,14 @@ class TetrahedronTheta {
             A0: { R: LT_A00, X: TX_A00, Y: TY_A00 },
             A1: { R: LT_A00, X: TX_A00, Y: TY_A01 },
             A2: { R: LT_A00, X: TX_A00, Y: TY_A02 },
-            Z0: { R: LT_A00, X: TX_Z00, Y: TY_Z00 }
+            Z0: { R: LT_A00, X: TX_Z00, Y: TY_Z00 },
         };
 
         this.surfaces = {
-            A0_A: ['A0', 'A1', 'A0'],
-            B0_A: ['A0', 'A1', 'Z0'],
-            B1_A: ['A1', 'A2', 'Z0'],
-            B2_A: ['A2', 'A0', 'Z0']
+            A0_A: ["A0", "A1", "A0"],
+            B0_A: ["A0", "A1", "Z0"],
+            B1_A: ["A1", "A2", "Z0"],
+            B2_A: ["A2", "A0", "Z0"],
         };
     }
 }

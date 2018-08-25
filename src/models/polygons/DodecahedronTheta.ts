@@ -64,29 +64,29 @@ class DodecahedronTheta {
             const base_Y = reles_base[i].Y;
 
             for (let n = 0; n < 5; n++) {
-                this.reles[i + n + 'AO'] = { R: base_R };
-                this.reles[i + n + 'SR'] = { R: base_R };
+                this.reles[i + n + "AO"] = { R: base_R };
+                this.reles[i + n + "SR"] = { R: base_R };
 
-                this.reles[i + n + 'AO'].X = base_X;
-                this.reles[i + n + 'AO'].Y = base_Y + ((Math.PI * 2 / 5) * n);
-                this.reles[i + n + 'SR'].X = base_X + Math.PI;
-                this.reles[i + n + 'SR'].Y = (base_Y + ((Math.PI * 2 / 5) * n)) * -1;
+                this.reles[i + n + "AO"].X = base_X;
+                this.reles[i + n + "AO"].Y = base_Y + ((Math.PI * 2 / 5) * n);
+                this.reles[i + n + "SR"].X = base_X + Math.PI;
+                this.reles[i + n + "SR"].Y = (base_Y + ((Math.PI * 2 / 5) * n)) * -1;
             }
         }
 
         this.surfaces = {
-            A0_A: ['A00AO', 'A01AO', 'A02AO', 'A03AO', 'A04AO'],
-            A0_R: ['A00SR', 'A01SR', 'A02SR', 'A03SR', 'A04SR'],
-            B0_A: ['A00AO', 'B00AO', 'B02SR', 'B01AO', 'A01AO'],
-            B1_A: ['A01AO', 'B01AO', 'B01SR', 'B02AO', 'A02AO'],
-            B2_A: ['A02AO', 'B02AO', 'B00SR', 'B03AO', 'A03AO'],
-            B3_A: ['A03AO', 'B03AO', 'B04SR', 'B04AO', 'A04AO'],
-            B4_A: ['A04AO', 'B04AO', 'B03SR', 'B00AO', 'A00AO'],
-            B0_R: ['A00SR', 'B00SR', 'B02AO', 'B01SR', 'A01SR'],
-            B1_R: ['A01SR', 'B01SR', 'B01AO', 'B02SR', 'A02SR'],
-            B2_R: ['A02SR', 'B02SR', 'B00AO', 'B03SR', 'A03SR'],
-            B3_R: ['A03SR', 'B03SR', 'B04AO', 'B04SR', 'A04SR'],
-            B4_R: ['A04SR', 'B04SR', 'B03AO', 'B00SR', 'A00SR']
+            A0_A: ["A00AO", "A01AO", "A02AO", "A03AO", "A04AO"],
+            A0_R: ["A00SR", "A01SR", "A02SR", "A03SR", "A04SR"],
+            B0_A: ["A00AO", "B00AO", "B02SR", "B01AO", "A01AO"],
+            B1_A: ["A01AO", "B01AO", "B01SR", "B02AO", "A02AO"],
+            B2_A: ["A02AO", "B02AO", "B00SR", "B03AO", "A03AO"],
+            B3_A: ["A03AO", "B03AO", "B04SR", "B04AO", "A04AO"],
+            B4_A: ["A04AO", "B04AO", "B03SR", "B00AO", "A00AO"],
+            B0_R: ["A00SR", "B00SR", "B02AO", "B01SR", "A01SR"],
+            B1_R: ["A01SR", "B01SR", "B01AO", "B02SR", "A02SR"],
+            B2_R: ["A02SR", "B02SR", "B00AO", "B03SR", "A03SR"],
+            B3_R: ["A03SR", "B03SR", "B04AO", "B04SR", "A04SR"],
+            B4_R: ["A04SR", "B04SR", "B03AO", "B00SR", "A00SR"]
         };
     }
 }

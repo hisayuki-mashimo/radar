@@ -40,7 +40,7 @@ class HexahedronTheta {
         const TY_A00 = 0;
 
         const reles_base = {
-            A0: { R: LT_A00, X: TX_A00, Y: TY_A00 }
+            A0: { R: LT_A00, X: TX_A00, Y: TY_A00 },
         };
 
         for (let i in reles_base) {
@@ -49,23 +49,23 @@ class HexahedronTheta {
             const base_Y = reles_base[i].Y;
 
             for (let n = 0; n < 4; n++) {
-                this.reles[i + n + 'AO'] = { R: base_R };
-                this.reles[i + n + 'SR'] = { R: base_R };
+                this.reles[i + n + "AO"] = { R: base_R };
+                this.reles[i + n + "SR"] = { R: base_R };
 
-                this.reles[i + n + 'AO'].X = base_X;
-                this.reles[i + n + 'AO'].Y = base_Y + ((Math.PI / 2) * n);
-                this.reles[i + n + 'SR'].X = base_X + Math.PI;
-                this.reles[i + n + 'SR'].Y = (base_Y + ((Math.PI / 2) * n)) * -1;
+                this.reles[i + n + "AO"].X = base_X;
+                this.reles[i + n + "AO"].Y = base_Y + ((Math.PI / 2) * n);
+                this.reles[i + n + "SR"].X = base_X + Math.PI;
+                this.reles[i + n + "SR"].Y = (base_Y + ((Math.PI / 2) * n)) * -1;
             }
         }
 
         this.surfaces = {
-            A0_A: ['A00AO', 'A01AO', 'A02AO', 'A03AO'],
-            A0_R: ['A00SR', 'A01SR', 'A02SR', 'A03SR'],
-            B0_A: ['A00AO', 'A01AO', 'A01SR', 'A02SR'],
-            B1_A: ['A02AO', 'A03AO', 'A03SR', 'A00SR'],
-            B0_B: ['A00SR', 'A01SR', 'A01AO', 'A02AO'],
-            B1_B: ['A02SR', 'A03SR', 'A03AO', 'A00AO']
+            A0_A: ["A00AO", "A01AO", "A02AO", "A03AO"],
+            A0_R: ["A00SR", "A01SR", "A02SR", "A03SR"],
+            B0_A: ["A00AO", "A01AO", "A01SR", "A02SR"],
+            B1_A: ["A02AO", "A03AO", "A03SR", "A00SR"],
+            B0_B: ["A00SR", "A01SR", "A01AO", "A02AO"],
+            B1_B: ["A02SR", "A03SR", "A03AO", "A00AO"],
         };
     }
 };

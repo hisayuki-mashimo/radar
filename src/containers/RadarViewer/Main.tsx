@@ -130,7 +130,7 @@ class RadarViewer extends React.Component {
       ...this.state,
       ...state,
     });
-  };
+  }
 
   execute = (state) => {
     const { radarObject } = state;
@@ -152,19 +152,19 @@ class RadarViewer extends React.Component {
     );
     radarObject.output();
     this.props.parameterManager.progress();
-  };
+  }
 
   onMouseDown = (x, y) => {
     this.setState({ move_switch: true });
 
     this.props.coordinateManager.resetAxis(x, y);
-  };
+  }
 
   onMouseMove = (x, y) => {
     if (this.state.move_switch === true) {
       this.props.coordinateManager.changeAxis(x, y);
     }
-  };
+  }
 
   onMouseUp = (x, y) => {
     if (this.state.move_switch === true) {
@@ -172,7 +172,7 @@ class RadarViewer extends React.Component {
 
       this.props.coordinateManager.setAxis(x, y);
     }
-  };
+  }
 
   onKeyDown = () => {
     if (this.state.animation) {
@@ -189,7 +189,7 @@ class RadarViewer extends React.Component {
     } else {
       this.setState({ animation_switch: false });
     }
-  };
+  }
 
   getParameterTypeValue = (parameterType) => {
     switch (parameterType) {

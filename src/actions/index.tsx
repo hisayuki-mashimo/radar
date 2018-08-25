@@ -11,15 +11,15 @@ export const setParameterType = (parameterType: number): Action => ({
   parameterType,
 });
 
-export const setParameters = (parameters: Array<number>): Action => ({
+export const setParameters = (parameters: number[]): Action => ({
   type: "SET_PARAMETERS",
   parameters,
 });
 
-export const resetParameters = (parameterType: number, parameters: Array<number>): Action => ({
+export const resetParameters = (parameterType: number, parameters: number[]): Action => ({
   type: "RESET_PARAMETERS",
-  parameterType,
   parameters,
+  parameterType,
 });
 
 export const fetchParameters = async (sei: string, mei: string, parameterType: number) => {
@@ -31,9 +31,9 @@ export const fetchParameters = async (sei: string, mei: string, parameterType: n
       mode: "cors",
       method: "POST",
       headers: {
-        //"Content-Type": "application/json",
+        // "Content-Type": "application/json",
         "Content-Type": "application/x-www-form-urlencoded;application/json;charset=utf-8",
-        //"X-Requested-With": "XMLHttpRequest",
+        // "X-Requested-With": "XMLHttpRequest",
       },
       body: JSON.stringify({ parameter_type: parameterType, last_name: sei, first_name: mei }),
       credentials: "include",
